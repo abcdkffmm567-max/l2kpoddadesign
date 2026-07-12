@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Logo Generator - L2K CREATIONS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #0a0f1a; 
+            color: #fff; 
+            min-height: 100vh; 
+        }
+        nav { 
+            background: rgba(10, 15, 26, 0.98); 
+            padding: 1rem 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid #1e293b; 
+        }
+        .logo { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 1.3rem; 
+            font-weight: 800; 
+            color: #3B82F6; 
+            letter-spacing: 1px;
+        }
+        .back-btn { 
+            font-family: 'Poppins', sans-serif; 
+            color: #3B82F6; 
+            text-decoration: none; 
+            padding: 0.5rem 1.5rem; 
+            border: 1px solid #3B82F6; 
+            border-radius: 20px; 
+            transition: 0.3s; 
+            font-weight: 600; 
+        }
+        .back-btn:hover { 
+            background: #3B82F6; 
+            color: #0a0f1a; 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+        .container { 
+            max-width: 1400px; 
+            margin: 3rem auto; 
+            padding: 0 5%; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 3rem; 
+            align-items: start; 
+        }
+        .generator-panel { 
+            background: #111827; 
+            border: 1px solid #1e293b; 
+            border-radius: 20px; 
+            padding: 2.5rem; 
+        }
+        .generator-panel h1 { 
+            font-family: 'Orbitron', sans-serif; 
+            color: #3B82F6; 
+            font-size: 2rem; 
+            margin-bottom: 0.5rem; 
+            font-weight: 900; 
+        }
+        .generator-panel p { 
+            font-family: 'Poppins', sans-serif; 
+            color: #94a3b8; 
+            margin-bottom: 2rem; 
+        }
+        .form-group { 
+            margin-bottom: 1.5rem; 
+        }
+        .form-group label { 
+            font-family: 'Poppins', sans-serif; 
+            display: block; 
+            color: #3B82F6; 
+            margin-bottom: 0.5rem; 
+            font-size: 0.9rem; 
+            letter-spacing: 1px; 
+            font-weight: 600; 
+        }
+        .form-group input, .form-group select { 
+            font-family: 'Poppins', sans-serif; 
+            width: 100%; 
+            padding: 1rem; 
+            background: #0a0f1a; 
+            border: 1px solid #1e293b; 
+            border-radius: 10px; 
+            color: #fff; 
+            font-size: 1rem; 
+            transition: 0.3s; 
+        }
+        .form-group input:focus, .form-group select:focus { 
+            outline: none; 
+            border-color: #3B82F6; 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); 
+        }
+        .mascot-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 1rem; 
+            margin-top: 0.5rem; 
+            max-height: 350px; 
+            overflow-y: auto; 
+            padding-right: 0.5rem; 
+        }
+        .mascot-grid::-webkit-scrollbar { 
+            width: 6px; 
+        }
+        .mascot-grid::-webkit-scrollbar-track { 
+            background: #0a0f1a; 
+            border-radius: 10px; 
+        }
+        .mascot-grid::-webkit-scrollbar-thumb { 
+            background: #3B82F6; 
+            border-radius: 10px; 
+        }
+        .mascot-option { 
+            border: 2px solid #1e293b; 
+            border-radius: 10px; 
+            padding: 0.5rem; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            background: #0a0f1a; 
+        }
+        .mascot-option:hover { 
+            border-color: #3B82F6; 
+            transform: scale(1.05); 
+        }
+        .mascot-option.active { 
+            border-color: #3B82F6; 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); 
+        }
+        .mascot-option img { 
+            width: 100%; 
+            height: 80px; 
+            object-fit: contain; 
+            border-radius: 5px; 
+        }
+        .bg-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 1rem; 
+            margin-top: 0.5rem; 
+        }
+        .bg-option { 
+            border: 2px solid #1e293b; 
+            border-radius: 10px; 
+            padding: 0.5rem; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            background: #0a0f1a; 
+            height: 80px; 
+        }
+        .bg-option:hover { 
+            border-color: #3B82F6; 
+            transform: scale(1.05); 
+        }
+        .bg-option.active { 
+            border-color: #3B82F6; 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); 
+        }
+        .bg-option.none { 
+            font-family: 'Poppins', sans-serif; 
+            font-size: 0.8rem; 
+            color: #64748b; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .bg-option img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 5px; 
+        }
+        .generate-btn { 
+            font-family: 'Poppins', sans-serif; 
+            width: 100%; 
+            padding: 1rem; 
+            background: #3B82F6; 
+            color: #fff; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin-top: 1rem; 
+        }
+        .generate-btn:hover { 
+            background: #2563eb;
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5); 
+        }
+        .preview-panel { 
+            background: #111827; 
+            border: 1px solid #1e293b; 
+            border-radius: 20px; 
+            padding: 2.5rem; 
+            text-align: center; 
+            position: sticky; 
+            top: 2rem; 
+        }
+        .preview-panel h2 { 
+            font-family: 'Orbitron', sans-serif; 
+            color: #3B82F6; 
+            margin-bottom: 1.5rem; 
+            font-weight: 800; 
+        }
+        #logoCanvas { 
+            width: 100%; 
+            max-width: 500px; 
+            height: 500px; 
+            background: #0a0f1a; 
+            border-radius: 15px; 
+            border: 2px solid #1e293b; 
+            margin-bottom: 1.5rem; 
+        }
+        .download-btn { 
+            font-family: 'Poppins', sans-serif; 
+            padding: 0.9rem 2.5rem; 
+            background: transparent; 
+            color: #3B82F6; 
+            border: 1.5px solid #3B82F6; 
+            border-radius: 30px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            text-decoration: none; 
+            display: inline-block; 
+        }
+        .download-btn:hover { 
+            background: #3B82F6; 
+            color: #0a0f1a; 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+        .download-btn:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+        }
+        @media (max-width: 968px) { 
+            .container { 
+                grid-template-columns: 1fr; 
+            } 
+            .preview-panel { 
+                position: static; 
+            } 
+            .mascot-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+            } 
+            .bg-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+            } 
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">L2K CREATIONS</div>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </nav>
+
+    <div class="container">
+        <div class="generator-panel">
+            <h1>Free Logo Generator</h1>
+            <p>Create your custom Free Fire gaming logo in seconds</p>
+            
+            <div class="form-group">
+                <label>✦ LOGO NAME / CLAN NAME</label>
+                <input type="text" id="logoText" placeholder="Enter your name" value="L2K CREATIONS">
+            </div>
+            
+            <div class="form-group">
+                <label>✦ SELECT MASCOT CHARACTER</label>
+                <div class="mascot-grid">
+                    <div class="mascot-option active" data-mascot="mascot1.png">
+                        <img src="mascot1.png" alt="Mascot 1">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot2.png">
+                        <img src="mascot2.png" alt="Mascot 2">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot3.png">
+                        <img src="mascot3.png" alt="Mascot 3">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot4.png">
+                        <img src="mascot4.png" alt="Mascot 4">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot5.png">
+                        <img src="mascot5.png" alt="Mascot 5">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot6.png">
+                        <img src="mascot6.png" alt="Mascot 6">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot7.png">
+                        <img src="mascot7.png" alt="Mascot 7">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot8.png">
+                        <img src="mascot8.png" alt="Mascot 8">
+                    </div>
+                    <div class="mascot-option" data-mascot="mascot9.png">
+                        <img src="mascot9.png" alt="Mascot 9">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>✦ BACKGROUND STYLE</label>
+                <div class="bg-grid">
+                    <div class="bg-option none active" data-bg="none">None</div>
+                    <div class="bg-option" data-bg="bg1.png">
+                        <img src="bg1.png" alt="BG 1">
+                    </div>
+                    <div class="bg-option" data-bg="bg2.png">
+                        <img src="bg2.png" alt="BG 2">
+                    </div>
+                    <div class="bg-option" data-bg="bg3.png">
+                        <img src="bg3.png" alt="BG 3">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>✦ LOGO EFFECT</label>
+                <select id="logoEffect">
+                    <option value="fire">Fire Effect 🔥</option>
+                    <option value="ice">Ice Effect ❄️</option>
+                    <option value="neon">Neon Glow ⚡</option>
+                    <option value="metal">3D Metallic 🛡️</option>
+                    <option value="gold">Gold Luxury 👑</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>✦ FONT STYLE</label>
+                <select id="fontStyle">
+                    <option value="orbitron">Orbitron Bold</option>
+                    <option value="impact">Impact Gaming</option>
+                    <option value="elegant">Elegant</option>
+                    <option value="futuristic">Futuristic</option>
+                </select>
+            </div>
+            
+            <button class="generate-btn" onclick="generateLogo()">✨ Generate Logo</button>
+            
+            <p style="color: #64748b; font-size: 0.85rem; margin-top: 1.5rem; text-align: center; font-family: 'Poppins', sans-serif;">
+                Need premium custom design? <a href="https://wa.me/94740682507" target="_blank" style="color: #3B82F6;">Contact us on WhatsApp</a>
+            </p>
+        </div>
+
+        <div class="preview-panel">
+            <h2>Logo Preview</h2>
+            <canvas id="logoCanvas" width="500" height="500"></canvas>
+            <button class="download-btn" id="downloadBtn" onclick="downloadLogo()" disabled>⬇ Download PNG</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('logoCanvas');
+        const ctx = canvas.getContext('2d');
+        const downloadBtn = document.getElementById('downloadBtn');
+        let selectedMascot = 'mascot1.png';
+        let selectedBg = 'none';
+        
+        document.querySelectorAll('.mascot-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.mascot-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                selectedMascot = this.dataset.mascot;
+                generateLogo();
+            });
+        });
+        
+        document.querySelectorAll('.bg-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                selectedBg = this.dataset.bg;
+                generateLogo();
+            });
+        });
+        
+        function generateLogo() {
+            const text = document.getElementById('logoText').value || 'L2K CREATIONS';
+            const effect = document.getElementById('logoEffect').value;
+            const font = document.getElementById('fontStyle').value;
+            
+            ctx.fillStyle = '#0a0f1a';
+            ctx.fillRect(0, 0, 500, 500);
+            
+            const drawMascotAndText = () => {
+                const mascotImg = new Image();
+                mascotImg.crossOrigin = 'anonymous';
+                mascotImg.onload = function() {
+                    const mascotSize = 280;
+                    ctx.drawImage(mascotImg, 250 - mascotSize/2, 100, mascotSize, mascotSize);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let fontSize = 50;
+                    let fontFamily = 'Orbitron';
+                    if (font === 'impact') fontFamily = 'Impact';
+                    else if (font === 'elegant') fontFamily = 'Georgia';
+                    else if (font === 'futuristic') fontFamily = 'Courier New';
+                    if (text.length > 15) fontSize = 35;
+                    else if (text.length > 10) fontSize = 42;
+                    ctx.font = `900 ${fontSize}px ${fontFamily}`;
+                    
+                    if (effect === 'fire') {
+                        ctx.shadowColor = '#ff4500'; 
+                        ctx.shadowBlur = 30; 
+                        ctx.fillStyle = '#3B82F6';
+                        ctx.fillText(text, 250, 420);
+                        ctx.shadowColor = '#ff0000'; 
+                        ctx.shadowBlur = 20; 
+                        ctx.fillStyle = '#60A5FA';
+                        ctx.fillText(text, 250, 420);
+                    } else if (effect === 'ice') {
+                        ctx.shadowColor = '#00ffff'; 
+                        ctx.shadowBlur = 30; 
+                        ctx.fillStyle = '#3B82F6';
+                        ctx.fillText(text, 250, 420);
+                        ctx.shadowBlur = 15; 
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(text, 250, 420);
+                    } else if (effect === 'neon') {
+                        ctx.shadowColor = '#3B82F6'; 
+                        ctx.shadowBlur = 40; 
+                        ctx.fillStyle = '#3B82F6';
+                        ctx.fillText(text, 250, 420);
+                        ctx.shadowColor = '#60A5FA'; 
+                        ctx.shadowBlur = 20; 
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(text, 250, 420);
+                    } else if (effect === 'metal') {
+                        const gradient = ctx.createLinearGradient(0, 390, 0, 450);
+                        gradient.addColorStop(0, '#1e40af'); 
+                        gradient.addColorStop(0.5, '#3B82F6'); 
+                        gradient.addColorStop(1, '#1e3a8a');
+                        ctx.fillStyle = gradient; 
+                        ctx.shadowColor = '#3B82F6'; 
+                        ctx.shadowBlur = 10;
+                        ctx.fillText(text, 250, 420);
+                    } else {
+                        const gradient = ctx.createLinearGradient(0, 390, 0, 450);
+                        gradient.addColorStop(0, '#3B82F6'); 
+                        gradient.addColorStop(0.5, '#60A5FA'); 
+                        gradient.addColorStop(1, '#2563eb');
+                        ctx.fillStyle = gradient; 
+                        ctx.shadowColor = '#3B82F6'; 
+                        ctx.shadowBlur = 25;
+                        ctx.fillText(text, 250, 420);
+                    }
+                    
+                    ctx.shadowBlur = 0; 
+                    ctx.font = '12px Poppins'; 
+                    ctx.fillStyle = '#64748b';
+                    ctx.fillText('L2K CREATIONS', 250, 485);
+                    downloadBtn.disabled = false;
+                };
+                mascotImg.onerror = function() {
+                    console.log('Mascot image failed to load:', selectedMascot);
+                };
+                mascotImg.src = selectedMascot;
+            };
+            
+            if (selectedBg !== 'none') {
+                const bgImg = new Image();
+                bgImg.crossOrigin = 'anonymous';
+                bgImg.onload = function() {
+                    ctx.globalAlpha = 0.3;
+                    ctx.drawImage(bgImg, 0, 0, 500, 500);
+                    ctx.globalAlpha = 1;
+                    drawMascotAndText();
+                };
+                bgImg.onerror = function() {
+                    console.log('Background image failed to load:', selectedBg);
+                    drawMascotAndText();
+                };
+                bgImg.src = selectedBg;
+            } else {
+                drawMascotAndText();
+            }
+        }
+        
+        function downloadLogo() {
+            const link = document.createElement('a');
+            link.download = 'L2K-FreeFire-Logo.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        window.onload = () => { 
+            setTimeout(generateLogo, 100); 
+        };
+    </script>
+</body>
+</html>
