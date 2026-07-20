@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - L2K CREATIONS TOP UP STORE</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="admin">
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo"><img data-logo-img alt="" style="display:none"><span data-logo-text>L2K</span></div>
+        <div>
+          <h1 data-site-name>L2K CREATIONS TOP UP STORE</h1>
+          <p data-tagline>Admin panel</p>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a class="btn small" href="index.html">Home</a>
+        <a class="btn small primary" href="FreeFireSG.html">Free Fire Page</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="admin-wrap">
+    <div class="notice">This admin panel saves changes in your browser using localStorage. For real online editing with multiple devices, a backend/database is needed.</div>
+
+    <div class="admin-grid">
+      <section class="panel form-card">
+        <h3>Site Settings</h3>
+        <form id="adminForm">
+          <div class="field">
+            <label>Website Name</label>
+            <input type="text" name="siteName" />
+          </div>
+          <div class="field">
+            <label>Tagline</label>
+            <input type="text" name="tagline" />
+          </div>
+          <div class="field">
+            <label>Hero Title</label>
+            <input type="text" name="heroTitle" />
+          </div>
+          <div class="field">
+            <label>Hero Text</label>
+            <textarea name="heroText"></textarea>
+          </div>
+          <div class="field">
+            <label>WhatsApp Number</label>
+            <input type="text" name="whatsapp" />
+          </div>
+          <div class="field">
+            <label>Website Logo Upload</label>
+            <input id="logoFile" type="file" accept="image/*" />
+            <img id="logoPreview" alt="" style="display:none;margin-top:10px;border-radius:16px;max-height:120px;border:1px solid var(--line)">
+          </div>
+          <div class="field">
+            <label>Ad Banner Upload</label>
+            <input id="bannerFile" type="file" accept="image/*" />
+            <img id="bannerPreview" alt="" style="display:none;margin-top:10px;border-radius:16px;max-height:160px;border:1px solid var(--line)">
+          </div>
+          <div class="row-actions">
+            <button class="btn primary" type="submit">Save Settings</button>
+            <button class="btn" type="button" id="resetData">Reset All</button>
+          </div>
+          <div id="saveMsg" class="small-muted" style="margin-top:10px"></div>
+        </form>
+      </section>
+
+      <section class="panel form-card">
+        <div class="flex-between">
+          <h3>Game Cards</h3>
+          <span class="pill">Edit titles, links, images</span>
+        </div>
+        <div class="help">The Free Fire card opens <b>FreeFireSG.html</b>. Other cards can be changed too.</div>
+        <div style="overflow:auto;margin-top:12px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th><th>Description</th><th>Link</th><th>Image</th>
+              </tr>
+            </thead>
+            <tbody id="gameTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="flex-between" style="margin-top:24px">
+          <h3>Diamond Packs</h3>
+          <span class="pill">Edit price + pack logo</span>
+        </div>
+        <div class="help">Upload a logo for each pack and change the price from here.</div>
+        <div style="overflow:auto;margin-top:12px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Pack Name</th><th>Price (LKR)</th><th>Logo</th>
+              </tr>
+            </thead>
+            <tbody id="packTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
