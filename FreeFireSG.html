@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Fire SG Top Up - L2K CREATIONS</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Poppins',sans-serif;background:#050B1E;color:#fff}
+.header{background:#0A1333;padding:15px 4%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1E2A5E;position:sticky;top:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:15px}
+.header a{color:#3B82F6;text-decoration:none;font-weight:700}
+.btn-admin{background:#EF4444;padding:8px 12px;border-radius:50px;color:#fff;font-weight:600;border:none;cursor:pointer;font-size:11px}
+.btn-logout{background:#555;padding:8px 12px;border-radius:50px;color:#fff;font-weight:600;border:none;cursor:pointer;font-size:11px}
+
+.container{padding:20px 4%;max-width:900px;margin:auto}
+.game-banner{background:linear-gradient(135deg,#FF0000,#8B0000);padding:25px;border-radius:15px;text-align:center;margin-bottom:25px}
+.game-banner img{width:100px;height:100px;border-radius:15px;margin-bottom:10px;border:3px solid #FFD700;object-fit:cover}
+.game-banner h1{font-size:24px;font-weight:900}
+.package-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:25px}
+.package-card{background:#0F1A3D;border:2px solid #1E2A5E;border-radius:12px;padding:15px;text-align:center;cursor:pointer;transition:.3s;position:relative}
+.package-card:hover{border-color:#3B82F6;transform:translateY(-3px)}
+.package-card.selected{border-color:#00E676;background:rgba(0,230,118,0.1)}
+.package-card img{width:60px;height:60px;margin-bottom:8px;object-fit:contain}
+.package-card h3{font-size:14px;margin-bottom:5px;font-weight:700}
+.package-card p{color:#60A5FA;font-size:15px;font-weight:800;margin-bottom:5px}
+.package-card span{color:#94A3B8;font-size:11px}
+.package-edit-btn{position:absolute;top:5px;right:5px;background:#3B82F6;border:none;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;cursor:pointer;display:none}
+.package-card:hover .package-edit-btn{display:block}
+.btn-buy{width:100%;background:linear-gradient(90deg,#2563EB,#3B82F6);border:none;color:#fff;padding:14px;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;margin-top:15px}
+.btn-buy:disabled{background:#333;cursor:not-allowed}
+.input-box{margin:20px 0}
+.input-box label{font-size:12px;color:#94A3B8;display:block;margin-bottom:5px;font-weight:600}
+.input-wrap{display:flex;gap:8px}
+.input-wrap input{flex:1;padding:12px;background:#0F1A3D;border:1px solid #2563EB;color:#fff;border-radius:8px;font-size:14px}
+.btn-verify{padding:12px 16px;background:#00E676;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+.verify-status{font-size:12px;margin-top:5px;font-weight:600}
+.verify-status.ok{color:#00E676}
+.verify-status.err{color:#EF4444}
+
+.toast{position:fixed;top:20px;right:20px;background:rgba(0,230,118,0.9);color:#000;padding:12px 18px;border-radius:8px;font-weight:700;z-index:999;display:none}
+
+/* ADMIN PANEL */
+.admin-panel{display:none;background:#0F1A3D;margin:20px 4%;padding:20px;border-radius:15px;border:2px solid #2563EB}
+.admin-panel h3{color:#3B82F6;margin-bottom:15px}
+.admin-panel h4{color:#FFD700;margin:12px 0 6px;font-size:14px}
+.admin-panel input{width:100%;padding:10px;margin:6px 0;background:#050B1E;border:1px solid #2563EB;color:#fff;border-radius:8px;font-size:13px}
+.package-admin-card{background:#050B1E;padding:12px;border-radius:10px;margin:10px 0;border:1px solid #2563EB;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.package-admin-card img{width:50px;height:50px;border-radius:8px;flex-shrink:0}
+.package-admin-inputs{flex:1;min-width:200px}
+.btn-topup{width:100%;background:linear-gradient(90deg,#2563EB,#3B82F6);border:none;color:#fff;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;margin-top:5px}
+
+/* LOGIN POPUP */
+.login-popup{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:999;justify-content:center;align-items:center}
+.login-box{background:#0F1A3D;padding:25px;border-radius:20px;border:2px solid #2563EB;width:90%;max-width:400px}
+.login-box input{width:100%;padding:12px;margin:8px 0;background:#050B1E;border:1px solid #2563EB;color:#fff;border-radius:8px}
+
+@media (min-width: 768px){.package-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+</head>
+<body>
+<div class="toast" id="toast">✅ Updated!</div>
+
+<header class="header">
+    <div class="header-left">
+        <a href="index.html">← Back</a>
+        <h2>L2K CREATIONS</h2>
+    </div>
+    <div id="adminControls" style="display:none">
+        <button class="btn-admin" onclick="toggleAdmin()">Admin Panel</button>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+    <button class="btn-admin" id="loginBtn" onclick="showLogin()">Admin Login</button>
+</header>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel">
+    <h3>⚙️ FreeFire SG Admin Panel</h3>
+    <h4>Game Settings</h4>
+    <div class="package-admin-card">
+        <img src="" id="gameLogoPreview">
+        <div class="package-admin-inputs">
+            <input type="text" id="gameLogoUrl" placeholder="Game Logo Image URL">
+            <input type="text" id="gameTitle" placeholder="Game Title">
+            <button class="btn-topup" onclick="updateGameSettings()">Update Game Logo</button>
+        </div>
+    </div>
+    
+    <h4>Manage Package Images & Prices</h4>
+    <div id="package-admin-list">Loading...</div>
+</div>
+
+<div class="container">
+    <div class="game-banner">
+        <img src="" id="gameLogo">
+        <h1 id="gameTitleText">Free Fire SG / MY</h1>
+        <p style="color:#FFD700;font-size:12px">Instant Diamond Top Up | 24/7 Delivery</p>
+    </div>
+
+    <div class="input-box">
+        <label>Enter Your Player UID *</label>
+        <div class="input-wrap">
+            <input type="number" id="playerId" placeholder="Example: 123456789" oninput="resetVerify()">
+            <button class="btn-verify" onclick="verifyUID()">Verify</button>
+        </div>
+        <div class="verify-status" id="verifyStatus"></div>
+    </div>
+
+    <h3 style="margin-bottom:15px;">💎 Select Diamond Package</h3>
+    <div class="package-grid" id="packageGrid">
+        <p style="text-align:center;color:#94A3B8">Loading packages...</p>
+    </div>
+
+    <button class="btn-buy" id="buyBtn" onclick="goToPayment()" disabled>Proceed to Payment</button>
+</div>
+
+<!-- LOGIN POPUP -->
+<div class="login-popup" id="loginPopup"><div class="login-box">
+    <h3 style="color:#3B82F6;text-align:center;margin-bottom:15px;">🔐 Admin Login</h3>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn-topup" onclick="handleLogin()">Login</button>
+    <p style="text-align:center;margin-top:10px;cursor:pointer;color:#94A3B8" onclick="hideLogin()">Close</p>
+</div></div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyBNRNmZJyxQiAj_AjNHLf43knOEmQ9e-FU",authDomain:"l2k-top-up-store.firebaseapp.com",databaseURL:"https://l2k-top-up-store-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"l2k-top-up-store"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+let selectedPackage = '';
+let selectedPrice = '';
+let currentPackages = [];
+let isAdmin = localStorage.getItem('ffAdmin') === 'true';
+let isVerified = false;
+
+// ADMIN LOGIN
+function showLogin(){document.getElementById('loginPopup').style.display='flex'}
+function hideLogin(){document.getElementById('loginPopup').style.display='none'}
+function handleLogin(){
+    let u=document.getElementById('username').value;
+    let p=document.getElementById('password').value;
+    if(u.toLowerCase()=='admin' && p=='l2kadmin'){
+        isAdmin = true;
+        localStorage.setItem('ffAdmin','true');
+        showToast('✅ Admin Login Success');
+        updateAdminUI();
+        loadAdminPanel(currentPackages);
+        hideLogin();
+    }else{showToast('❌ Wrong Password')}
+}
+function logout(){isAdmin=false;localStorage.removeItem('ffAdmin');updateAdminUI();showToast('Logged Out')}
+function toggleAdmin(){
+    let panel = document.getElementById('adminPanel');
+    panel.style.display = panel.style.display=='block'?'none':'block';
+}
+
+function updateAdminUI(){
+    if(isAdmin){
+        document.getElementById('adminControls').style.display='block';
+        document.getElementById('loginBtn').style.display='none';
+    }else{
+        document.getElementById('adminControls').style.display='none';
+        document.getElementById('loginBtn').style.display='block';
+        document.getElementById('adminPanel').style.display='none';
+    }
+}
+
+function showToast(msg){
+    let t = document.getElementById('toast');
+    t.innerText = msg;
+    t.style.display = 'block';
+    setTimeout(()=>t.style.display='none', 2000);
+}
+
+// LOAD GAME SETTINGS + PACKAGES
+db.ref("site/ffSettings").on("value",s=>{
+    let settings = s.val();
+    if(!settings){
+        settings = {logo:"https://via.placeholder.com/100/FF0000/FFD700?text=FFSG",title:"Free Fire SG / MY"};
+        db.ref("site/ffSettings").set(settings);
+    }
+    document.getElementById('gameLogo').src = settings.logo;
+    document.getElementById('gameTitleText').innerText = settings.title;
+    if(isAdmin){
+        document.getElementById('gameLogoUrl').value = settings.logo;
+        document.getElementById('gameTitle').value = settings.title;
+        document.getElementById('gameLogoPreview').src = settings.logo;
+    }
+});
+
+db.ref("site/ffPackages").on("value",s=>{
+    let pkgs = s.val();
+    if(!pkgs){
+        pkgs = [
+            {name:"100 Diamonds",price:"LKR 280",img:"https://via.placeholder.com/80/FFD700/000?text=100"},
+            {name:"210 Diamonds",price:"LKR 560",img:"https://via.placeholder.com/80/FFD700/000?text=210"},
+            {name:"530 Diamonds",price:"LKR 1400",img:"https://via.placeholder.com/80/FFD700/000?text=530"},
+            {name:"1060 Diamonds",price:"LKR 2800",img:"https://via.placeholder.com/80/FFD700/000?text=1060"},
+            {name:"2180 Diamonds",price:"LKR 5600",img:"https://via.placeholder.com/80/FFD700/000?text=2180"},
+            {name:"Weekly Membership",price:"LKR 550",img:"https://via.placeholder.com/80/8B5CF6/fff?text=WEEKLY"},
+            {name:"Monthly Membership",price:"LKR 2750",img:"https://via.placeholder.com/80/8B5CF6/fff?text=MONTHLY"}
+        ];
+        db.ref("site/ffPackages").set(pkgs);
+    }
+    currentPackages = pkgs;
+    loadPackages(pkgs);
+    if(isAdmin) loadAdminPanel(pkgs);
+});
+
+function loadPackages(pkgs){
+    let h = '';
+    pkgs.forEach((p,i)=>{
+        h+=`<div class="package-card" onclick="selectPackage('${p.name}','${p.price}',this)">
+            ${isAdmin ? `<button class="package-edit-btn" onclick="event.stopPropagation();editPackage(${i})">Edit</button>` : ''}
+            <img src="${p.img}" onerror="this.src='https://via.placeholder.com/60/333/fff?text=FF'">
+            <h3>${p.name}</h3>
+            <p>${p.price}</p>
+            <span>⚡ Instant Delivery</span>
+        </div>`;
+    });
+    document.getElementById('packageGrid').innerHTML = h;
+}
+
+function loadAdminPanel(pkgs){
+    let h = '';
+    pkgs.forEach((p,i)=>{
+        h+=`<div class="package-admin-card">
+            <img src="${p.img}" id="preview${i}">
+            <div class="package-admin-inputs">
+                <input type="text" id="ffname${i}" value="${p.name}" placeholder="Package Name">
+                <input type="text" id="ffprice${i}" value="${p.price}" placeholder="Price">
+                <input type="text" id="ffimg${i}" value="${p.img}" placeholder="Image URL" oninput="document.getElementById('preview${i}').src=this.value">
+                <button class="btn-topup" onclick="updateFFPackage(${i})">Update Package</button>
+            </div>
+        </div>`;
+    });
+    document.getElementById('package-admin-list').innerHTML = h;
+}
+
+function updateGameSettings(){
+    let logo = document.getElementById('gameLogoUrl').value;
+    let title = document.getElementById('gameTitle').value;
+    db.ref("site/ffSettings").set({logo:logo,title:title})
+    .then(()=>showToast('✅ Game Settings Updated!'));
+}
+
+function updateFFPackage(index){
+    let name = document.getElementById('ffname'+index).value;
+    let price = document.getElementById('ffprice'+index).value;
+    let img = document.getElementById('ffimg'+index).value;
+    db.ref("site/ffPackages/"+index).set({name:name,price:price,img:img})
+    .then(()=>showToast('✅ Package Updated!'));
+}
+
+function editPackage(index){
+    toggleAdmin();
+    document.getElementById('adminPanel').scrollIntoView();
+}
+
+// UID VERIFY
+function verifyUID(){
+    let uid = document.getElementById('playerId').value;
+    let status = document.getElementById('verifyStatus');
+    if(!uid || uid.length < 6){
+        status.innerText = '❌ Invalid UID';
+        status.className = 'verify-status err';
+        isVerified = false;
+        checkBtn();
+        return;
+    }
+    // Demo Verify - Real API එකක් connect කරන්න පුළුවන්
+    status.innerText = '✅ Player ID Verified';
+    status.className = 'verify-status ok';
+    isVerified = true;
+    checkBtn();
+}
+
+function resetVerify(){
+    document.getElementById('verifyStatus').innerText = '';
+    isVerified = false;
+    checkBtn();
+}
+
+function selectPackage(name, price, el){
+    selectedPackage = name;
+    selectedPrice = price;
+    document.querySelectorAll('.package-card').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    checkBtn();
+}
+
+function checkBtn(){
+    let uid = document.getElementById('playerId').value;
+    document.getElementById('buyBtn').disabled = !(uid && selectedPackage && isVerified);
+}
+
+function goToPayment(){
+    let uid = document.getElementById('playerId').value;
+    if(!uid){showToast('❌ Please enter your Player UID');return;}
+    if(!isVerified){showToast('❌ Please verify your UID first');return;}
+    if(!selectedPackage){showToast('❌ Please select a package');return;}
+    localStorage.setItem('order', JSON.stringify({game:document.getElementById('gameTitleText').innerText,uid:uid,package:selectedPackage + ' - ' + selectedPrice}));
+    window.location.href = 'payment.html';
+}
+
+updateAdminUI();
+</script>
+</body>
+</html>
