@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Profile | L2K TOP UP STORE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f7fb;color:#111827}
+.topbar{height:68px;background:#fff;border-bottom:1px solid #e7ecf3;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.brand img{width:40px;height:40px;border-radius:12px;object-fit:cover;background:#0b1424}
+.brand-fallback{width:40px;height:40px;border-radius:12px;background:#0b1424;color:#fff;display:grid;place-items:center;font-size:12px}
+.toplinks{display:flex;gap:9px;flex-wrap:wrap}
+.toplinks a{text-decoration:none;padding:9px 12px;border-radius:10px;background:#eef4ff;color:#1767d8;font-size:12px;font-weight:800}
+.wrap{width:min(920px,calc(100% - 24px));margin:32px auto 70px}
+.hero{background:linear-gradient(135deg,#0d1d3a,#1269dc 70%,#16b9d9);border-radius:24px;color:#fff;padding:28px;box-shadow:0 22px 50px rgba(24,87,170,.18)}
+.profile-head{display:flex;align-items:center;gap:18px}
+.avatar{width:88px;height:88px;border-radius:50%;background:#fff;color:#1767d8;display:grid;place-items:center;font-weight:950;font-size:30px;overflow:hidden;border:4px solid rgba(255,255,255,.7)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.hero h1{margin:0 0 5px} .hero p{margin:0;color:#dbeafe}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.card{background:#fff;border:1px solid #e7ecf3;border-radius:20px;padding:20px;box-shadow:0 14px 34px rgba(40,80,120,.07)}
+.card h2{margin-top:0;font-size:20px}
+.field{margin-bottom:14px} label{display:block;font-size:12px;font-weight:800;color:#536072;margin-bottom:7px}
+input{width:100%;height:46px;border:1px solid #dce3ec;border-radius:10px;padding:0 12px;outline:none}
+input:focus{border-color:#3186f4;box-shadow:0 0 0 3px rgba(49,134,244,.1)}
+.btn{height:44px;border:0;border-radius:10px;padding:0 16px;font-weight:850;cursor:pointer}
+.primary{background:#1767d8;color:#fff} .danger{background:#fff1f2;color:#be123c}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat{background:#f6f9fd;border:1px solid #edf1f6;border-radius:16px;padding:16px;text-align:center}
+.stat b{display:block;font-size:22px;color:#1767d8} .stat span{font-size:11px;color:#7c899a}
+.msg{font-size:12px;margin-top:10px;color:#1767d8}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.profile-head{align-items:flex-start}.stats{grid-template-columns:1fr}}
+
+/* ===== L2K Global Animations ===== */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+@keyframes l2kFadeUp{
+  from{opacity:0;transform:translateY(26px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes l2kFadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes l2kFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+@keyframes l2kPulseGlow{
+  0%,100%{box-shadow:0 0 0 rgba(33,199,255,0)}
+  50%{box-shadow:0 0 30px rgba(33,199,255,.24)}
+}
+@keyframes l2kShine{
+  0%{transform:translateX(-140%) rotate(18deg)}
+  100%{transform:translateX(240%) rotate(18deg)}
+}
+@keyframes l2kGradientMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes l2kSpinSlow{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+.l2k-reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.l2k-reveal.l2k-visible{opacity:1;transform:none}
+.l2k-stagger>*{opacity:0;transform:translateY(18px)}
+.l2k-stagger.l2k-visible>*{animation:l2kFadeUp .65s ease forwards}
+.l2k-stagger.l2k-visible>*:nth-child(2){animation-delay:.08s}
+.l2k-stagger.l2k-visible>*:nth-child(3){animation-delay:.16s}
+.l2k-stagger.l2k-visible>*:nth-child(4){animation-delay:.24s}
+.l2k-stagger.l2k-visible>*:nth-child(5){animation-delay:.32s}
+.l2k-stagger.l2k-visible>*:nth-child(6){animation-delay:.40s}
+.brand-mark,.brand-logo,.logo-big{animation:l2kFloat 4s ease-in-out infinite}
+.btn,.small-btn,.google-btn,.login-btn,.submit,.play-btn,.game-card,.card,.dark-card,.product-card,.reason-card,.reseller-card,.contact-box,.admin-card{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,filter .22s ease
+}
+.btn:hover,.small-btn:hover,.google-btn:hover,.login-btn:hover,.submit:hover,.play-btn:hover{
+  transform:translateY(-2px) scale(1.01)
+}
+.game-card:hover,.card:hover,.dark-card:hover,.product-card:hover,.reason-card:hover,.reseller-card:hover,.contact-box:hover,.admin-card:hover{
+  transform:translateY(-6px)
+}
+.hero h1,.page-hero h1,.game-center-hero h1,.right h1{
+  animation:l2kFadeUp .8s ease both
+}
+.hero p,.page-hero p,.game-center-hero p{
+  animation:l2kFadeIn 1s ease .18s both
+}
+.hero .eyebrow,.gc-pill{
+  animation:l2kPulseGlow 2.8s ease-in-out infinite
+}
+.hero::before{animation:l2kFloat 7s ease-in-out infinite}
+.hero::after{animation:l2kFloat 5s ease-in-out infinite reverse}
+.btn-primary,.login-btn,.submit,.play-btn,.code-btn{
+  background-size:200% 200%!important;
+  animation:l2kGradientMove 5s ease infinite
+}
+.icon-box,.round-icon,.mini-icon,.lb-icon,.contact-dot{
+  animation:l2kFloat 4.5s ease-in-out infinite
+}
+.game-cover,.product-visual,.banner,.hero,.game-center-hero{
+  position:relative;
+  overflow:hidden
+}
+.game-cover::after,.product-visual::after,.banner::after,.game-center-hero::after{
+  content:"";position:absolute;top:-30%;left:-35%;width:28%;height:160%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  transform:rotate(18deg);
+  animation:l2kShine 6s ease-in-out infinite;
+  pointer-events:none
+}
+.avatar{animation:l2kPulseGlow 3s ease-in-out infinite}
+input:focus,select:focus,textarea:focus{
+  transform:translateY(-1px);
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease
+}
+.navbar,.topbar{
+  animation:l2kFadeIn .5s ease both
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .l2k-reveal,.l2k-stagger>*{opacity:1!important;transform:none!important}
+}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <img id="siteLogo" style="display:none" alt="L2K logo">
+    <div id="siteLogoFallback" class="brand-fallback">L2K</div>
+    <span>L2K TOP UP STORE</span>
+  </div>
+  <div class="toplinks">
+    <a href="index.html">Home</a>
+    <a href="topup.html">Top Up</a>
+    <a id="adminLink" href="admin.html" style="display:none">Admin Panel</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="profile-head">
+      <div class="avatar" id="avatar">U</div>
+      <div>
+        <h1 id="displayName">My Profile</h1>
+        <p id="displayEmail">Loading account...</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Profile Details</h2>
+      <div class="field"><label>Username</label><input id="username"></div>
+      <div class="field"><label>Email</label><input id="email" disabled></div>
+      <div class="field"><label>WhatsApp Number</label><input id="phone" placeholder="+94..."></div>
+      <div class="field"><label>Profile Photo</label><input id="photo" type="file" accept="image/*"></div>
+      <button id="saveBtn" class="btn primary">Save Profile</button>
+      <div id="msg" class="msg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Account</h2>
+      <div class="stats">
+        <div class="stat"><b id="orderCount">0</b><span>Orders</span></div>
+        <div class="stat"><b id="accountRole">User</b><span>Role</span></div>
+        <div class="stat"><b id="verified">No</b><span>Email Verified</span></div>
+      </div>
+      <p style="color:#7c899a;line-height:1.6;font-size:13px">Your profile information is stored in Firebase and can be updated from this page.</p>
+      <button id="logoutBtn" class="btn danger">Log Out</button>
+    </section>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
+
+const firebaseConfig = {"apiKey": "AIzaSyCvRetnbUARMXnMQ2UI9ksiFNdpbLIuIMQ", "authDomain": "l2k-top-up-store-lkr.firebaseapp.com", "projectId": "l2k-top-up-store-lkr", "storageBucket": "l2k-top-up-store-lkr.firebasestorage.app", "messagingSenderId": "722986740809", "appId": "1:722986740809:web:bcb97c3d5c2106d4b1a398"};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+let currentUser = null;
+let currentData = {};
+
+async function loadSiteLogo(){
+  try{
+    const snap = await getDoc(doc(db,"siteSettings","general"));
+    const url = snap.exists() ? snap.data().logoUrl : "";
+    if(url){
+      document.getElementById("siteLogo").src = url;
+      document.getElementById("siteLogo").style.display = "block";
+      document.getElementById("siteLogoFallback").style.display = "none";
+    }
+  }catch(e){}
+}
+loadSiteLogo();
+
+onAuthStateChanged(auth, async user => {
+  if(!user){ location.href = "login.html"; return; }
+  currentUser = user;
+  const snap = await getDoc(doc(db,"users",user.uid));
+  currentData = snap.exists() ? snap.data() : {};
+
+  const name = currentData.username || user.displayName || "User";
+  document.getElementById("displayName").textContent = name;
+  document.getElementById("displayEmail").textContent = user.email || "";
+  document.getElementById("username").value = name;
+  document.getElementById("email").value = user.email || "";
+  document.getElementById("phone").value = currentData.whatsapp || "";
+  document.getElementById("accountRole").textContent = currentData.role || "customer";
+  document.getElementById("verified").textContent = user.emailVerified ? "Yes" : "No";
+
+  if(currentData.photoURL || user.photoURL){
+    document.getElementById("avatar").innerHTML = `<img src="${currentData.photoURL || user.photoURL}" alt="Profile">`;
+  } else {
+    document.getElementById("avatar").textContent = name.charAt(0).toUpperCase();
+  }
+
+  if((currentData.role || "").toLowerCase() === "admin"){
+    document.getElementById("adminLink").style.display = "inline-block";
+  }
+
+  try{
+    const q = query(collection(db,"orders"), where("userId","==",user.uid));
+    const os = await getDocs(q);
+    document.getElementById("orderCount").textContent = os.size;
+  }catch(e){}
+});
+
+document.getElementById("saveBtn").onclick = async()=>{
+  if(!currentUser) return;
+  const msg = document.getElementById("msg");
+  try{
+    let photoURL = currentData.photoURL || currentUser.photoURL || "";
+    const file = document.getElementById("photo").files[0];
+    if(file){
+      const r = ref(storage, "profile-photos/"+currentUser.uid+"/"+Date.now()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_"));
+      await uploadBytes(r,file);
+      photoURL = await getDownloadURL(r);
+    }
+    const username = document.getElementById("username").value.trim();
+    const whatsapp = document.getElementById("phone").value.trim();
+    await updateProfile(currentUser, {displayName:username, photoURL});
+    await setDoc(doc(db,"users",currentUser.uid), {
+      username, email:currentUser.email || "", whatsapp, photoURL, role:currentData.role || "customer"
+    }, {merge:true});
+    msg.textContent = "Profile updated successfully.";
+    setTimeout(()=>location.reload(),700);
+  }catch(e){ msg.textContent = "Update failed: "+e.message; }
+};
+
+document.getElementById("logoutBtn").onclick = async()=>{
+  await signOut(auth);
+  location.href = "login.html";
+};
+</script>
+
+<script>
+(function(){
+  const selectors = [
+    '.section','.banner','.card','.dark-card','.product-card','.form-wrap',
+    '.contact-box','.faq','.reason-card','.reseller-card','.cta-box','.leaderboard',
+    '.app-box','.auth-card','.admin-card','.hero-content','.page-hero .container',
+    '.game-center-hero','.games-grid','.profile-head'
+  ];
+  const nodes = [];
+  selectors.forEach(sel=>{
+    document.querySelectorAll(sel).forEach(el=>{
+      if(!el.classList.contains('l2k-reveal')) {
+        el.classList.add('l2k-reveal');
+        nodes.push(el);
+      }
+    });
+  });
+
+  document.querySelectorAll('.service-grid,.dark-cards,.product-grid,.games-grid,.reason-grid,.reseller-grid,.podium,.stats')
+    .forEach(el=>el.classList.add('l2k-stagger'));
+
+  const reveal = (el)=>el.classList.add('l2k-visible');
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        reveal(entry.target);
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'}) : null;
+
+  document.querySelectorAll('.l2k-reveal,.l2k-stagger').forEach(el=>{
+    if(io) io.observe(el); else reveal(el);
+  });
+
+  // Ripple click effect on interactive controls
+  document.querySelectorAll('button,.btn,.small-btn,.google-btn,.login-btn,.submit,.play-btn').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      const r=document.createElement('span');
+      const rect=this.getBoundingClientRect();
+      const size=Math.max(rect.width,rect.height)*1.4;
+      r.style.cssText=`position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:rgba(255,255,255,.25);left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;transform:scale(0);animation:l2kRipple .55s ease-out;pointer-events:none;`;
+      const oldPos=getComputedStyle(this).position;
+      if(oldPos==='static') this.style.position='relative';
+      this.style.overflow='hidden';
+      this.appendChild(r);
+      setTimeout(()=>r.remove(),600);
+    });
+  });
+
+  const style=document.createElement('style');
+  style.textContent='@keyframes l2kRipple{to{transform:scale(1);opacity:0}}';
+  document.head.appendChild(style);
+})();
+</script>
+
+</body></html>
