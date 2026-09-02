@@ -1,0 +1,101 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — L2K TOP UP STORE</title><link rel="stylesheet" href="style.css"><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+<script src="firebase.js"></script>
+<script src="orders.js"></script>
+<script src="reviews.js"></script>
+</head><body>
+<header class="topbar"><div class="container nav"><a class="logo" href="index.html"><span class="logo-mark">L2K</span><span class="logo-text"><strong>L2K</strong><small>TOP UP STORE • ADMIN</small></span></a><a class="btn btn-light" href="index.html">VIEW STORE →</a></div></header>
+<main class="admin-shell"><div class="container"><div id="login" class="order-box" style="max-width:430px"><h2 style="font-family:Poppins;margin-bottom:14px">Admin Login</h2><div class="notice">Admin login required. Please enter your administrator credentials.</div><div class="field"><label>Username</label><input id="au" placeholder="Enter admin username"></div><br><div class="field"><label>Password</label><input id="ap" type="password" placeholder="Enter admin password"></div><br><button class="btn btn-primary" onclick="login()">LOGIN →</button></div>
+<div id="dashboard" style="display:none"><div class="admin-grid"><aside class="admin-side"><h3>L2K CONTROL PANEL</h3><a class="active">Dashboard</a><a href="index.html">Open Store</a><a href="topup.html">Products</a></aside><section class="admin-main"><div class="admin-card"><h2>Store Settings</h2><div class="form-grid"><div class="field"><label>WhatsApp Number</label><input id="wa"></div><div class="field"><label>Store Name</label><input id="brand"></div><div class="field full"><label>Hero Banner</label><div class="notice">Use the “Website Image URLs” section below to set the hero background by URL.</div></div><div class="field full"><button class="btn btn-primary" onclick="saveSettings()">SAVE SETTINGS</button></div></div></div>
+<div class="admin-card"><h2>Diamond / Product Prices</h2><div id="ptable"></div><button class="btn btn-primary" style="margin-top:14px" onclick="addProduct()">+ ADD PRODUCT</button></div>
+<div class="admin-card"><h2>Store Ads / Updates</h2><div id="posts"></div><button class="btn btn-primary" style="margin-top:14px" onclick="addPost()">+ ADD UPDATE</button></div>
+<div class="admin-card">
+  <h2>Game Card Image URLs</h2>
+  <div class="notice">Paste direct image URLs here. These images are saved in Firebase Realtime Database and shown to all visitors on topup.html.</div>
+  <div id="gameImageUrlFields" class="form-grid"></div>
+  <div class="field full" style="margin-top:12px"><button class="btn btn-primary" type="button" onclick="saveGameImageUrls()">SAVE GAME CARD IMAGES</button></div>
+</div>
+
+<div class="admin-card">
+  <h2>Website Image URLs</h2>
+  <div class="notice">Use image URLs instead of uploading files. These values are shared through Firebase.</div>
+  <div class="form-grid">
+    <div class="field full">
+      <label>Old Single Hero Background URL (legacy)</label>
+      <input id="heroUrl" placeholder="https://example.com/hero-banner.jpg">
+    </div>
+    <div class="field full">
+      <label>Home Promotion Banner URL</label>
+      <input id="promoUrl" placeholder="https://example.com/promo-banner.jpg">
+    </div>
+    <div class="field full">
+      <button class="btn btn-primary" type="button" onclick="saveWebsiteImageUrls()">SAVE WEBSITE IMAGE URLS</button>
+    </div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <h2>Free Fire SG/MY Page Manager</h2>
+  <div class="notice">Change the Free Fire page hero image, package names, prices and package image URLs. Everything is saved in Firebase and shown to all visitors.</div>
+  <div class="field full">
+    <label>Free Fire SG Hero Background URL</label>
+    <input id="ffHeroUrl" placeholder="https://example.com/freefire-banner.jpg">
+  </div>
+  <div id="ffPackageAdmin" style="margin-top:16px"></div>
+  <button class="btn btn-primary" style="margin-top:15px" type="button" onclick="saveFreeFireSG()">SAVE FREE FIRE SG PAGE</button>
+</div>
+
+<div class="admin-card">
+  <h2>Customer Orders</h2>
+  <div class="notice">Orders placed from the website appear here live from Firebase. Change an order from Pending → Active → Completed, or Reject it.</div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+    <button class="small-btn" onclick="setOrderFilter('all')">All</button>
+    <button class="small-btn" onclick="setOrderFilter('pending')">Pending</button>
+    <button class="small-btn" onclick="setOrderFilter('active')">Active</button>
+    <button class="small-btn" onclick="setOrderFilter('completed')">Completed</button>
+    <button class="small-btn" onclick="setOrderFilter('rejected')">Rejected</button>
+  </div>
+
+  <div id="ordersSummary" style="font-size:10px;color:#68758a;margin-bottom:10px">Loading orders...</div>
+  <div id="ordersTable" style="overflow:auto"></div>
+</div>
+
+<div class="admin-card">
+  <h2>Customer Reviews</h2>
+  <div class="notice">Customer reviews from Firebase appear here. You can approve, hide, or delete reviews.</div>
+  <div id="adminReviewsSummary" style="font-size:10px;color:#68758a;margin-bottom:10px">Loading reviews...</div>
+  <div id="adminReviewsTable" style="overflow:auto"></div>
+</div>
+
+<div class="admin-card">
+  <h2>Hero Slider Banners</h2>
+  <div class="notice">
+    Add up to 4 hero banner image URLs. These banners auto-slide behind the L2K TOP UP title on the home page.
+  </div>
+  <div class="form-grid">
+    <div class="field full">
+      <label>Banner 1 Image URL</label>
+      <input id="heroBanner1" placeholder="https://example.com/banner1.jpg">
+    </div>
+    <div class="field full">
+      <label>Banner 2 Image URL</label>
+      <input id="heroBanner2" placeholder="https://example.com/banner2.jpg">
+    </div>
+    <div class="field full">
+      <label>Banner 3 Image URL</label>
+      <input id="heroBanner3" placeholder="https://example.com/banner3.jpg">
+    </div>
+    <div class="field full">
+      <label>Banner 4 Image URL</label>
+      <input id="heroBanner4" placeholder="https://example.com/banner4.jpg">
+    </div>
+    <div class="field full">
+      <button class="btn btn-primary" type="button" onclick="saveHeroSliderBanners()">SAVE HERO SLIDER</button>
+    </div>
+  </div>
+</div>
+</section></div></div></div></main><div class="toast"></div><script src="app.js"></script><script src="admin.js"></script><script src="animations.js"></script>
+</body></html>
