@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create Account — L2K TOP UP STORE</title>
+<link rel="icon" href="logo.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,Arial,sans-serif;
+  min-height:100vh;
+  background:#f5f8fd;
+  color:#111827;
+}
+a{text-decoration:none;color:inherit}
+.register-shell{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:minmax(320px,38%) 1fr;
+  max-width:1180px;
+  margin:auto;
+  background:#fff;
+  box-shadow:0 15px 60px rgba(20,40,80,.08);
+}
+.brand-panel{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(160deg,#2347c7 0%,#1764f0 62%,#1676ff 100%);
+  color:white;
+  padding:42px 38px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+.brand-panel:before{
+  content:"";
+  position:absolute;
+  width:290px;height:290px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  right:-115px;top:-110px;
+}
+.brand-panel:after{
+  content:"";
+  position:absolute;
+  width:360px;height:360px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.08);
+  left:-210px;bottom:-220px;
+}
+.brand-logo{
+  width:102px;height:102px;
+  background:#fff;
+  border-radius:20px;
+  display:grid;
+  place-items:center;
+  box-shadow:0 14px 32px rgba(0,0,0,.12);
+  margin-bottom:26px;
+  z-index:1;
+}
+.brand-logo span{
+  width:58px;height:58px;border:3px solid #0b1324;border-radius:50%;
+  display:grid;place-items:center;
+  color:#0b1324;font-weight:900;font-size:20px;
+  font-family:Poppins;
+}
+.brand-panel h2{
+  font-family:Poppins;
+  font-size:25px;
+  margin-bottom:8px;
+  z-index:1;
+}
+.brand-panel>p{
+  font-size:13px;
+  line-height:1.7;
+  max-width:300px;
+  opacity:.93;
+  z-index:1;
+}
+.features{
+  width:100%;
+  max-width:320px;
+  margin-top:34px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:15px;
+  padding:12px 20px;
+  z-index:1;
+  backdrop-filter:blur(6px);
+}
+.feature{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.15);
+  font-size:12px;
+  font-weight:700;
+  text-align:left;
+}
+.feature:last-child{border-bottom:0}
+.feature-icon{
+  width:22px;
+  text-align:center;
+  font-size:18px;
+}
+.form-panel{
+  padding:38px 9% 45px;
+  display:flex;
+  justify-content:center;
+  overflow:auto;
+}
+.form-wrap{width:min(520px,100%)}
+.back-home{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:#64748b;
+  font-size:12px;
+  margin-bottom:22px;
+}
+.form-head{text-align:center;margin-bottom:24px}
+.form-head h1{
+  font-family:Poppins;
+  font-size:27px;
+  line-height:1.2;
+  color:#0f172a;
+}
+.form-head p{font-size:12px;color:#64748b;margin-top:7px}
+.google-btn{
+  width:100%;
+  height:50px;
+  border:1px solid #dfe5ee;
+  background:#fff;
+  border-radius:9px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  font-weight:700;
+  color:#111827;
+  transition:.2s;
+}
+.google-btn:hover{background:#f8fafc;border-color:#cdd6e3}
+.google-g{
+  font-size:19px;
+  font-weight:900;
+  background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 0 50%,#fbbc05 0 75%,#ea4335 0);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.divider{
+  display:flex;align-items:center;gap:13px;
+  margin:23px 0;
+  color:#98a2b3;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.6px;
+}
+.divider:before,.divider:after{content:"";height:1px;background:#e3e8ef;flex:1}
+.field{margin-bottom:18px}
+.field label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:8px;
+  color:#111827;
+}
+.input, select{
+  width:100%;
+  height:49px;
+  border:1px solid #dfe5ee;
+  border-radius:9px;
+  padding:0 14px;
+  outline:none;
+  background:#fff;
+  color:#111827;
+  font-size:12px;
+  transition:.2s;
+}
+.input:focus,select:focus{
+  border-color:#2d65ed;
+  box-shadow:0 0 0 3px rgba(45,101,237,.10);
+}
+.input::placeholder{color:#a0a8ba}
+.email-row,.phone-row{
+  display:grid;
+  grid-template-columns:1fr 118px;
+  gap:10px;
+}
+.phone-row{grid-template-columns:104px 1fr}
+.code-btn{
+  border:0;
+  border-radius:9px;
+  background:#2c63ef;
+  color:white;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+  padding:0 12px;
+}
+.code-btn:hover{background:#1f53d7}
+.helper{font-size:9px;color:#94a3b8;margin-top:7px}
+.password-wrap{position:relative}
+.password-wrap .input{padding-right:44px}
+.eye{
+  position:absolute;
+  border:0;
+  background:transparent;
+  right:12px;top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  color:#94a3b8;
+  font-size:16px;
+}
+.strength{
+  width:85%;
+  height:4px;
+  background:#e5e7eb;
+  border-radius:99px;
+  margin-top:8px;
+  overflow:hidden;
+}
+.strength span{display:block;width:0;height:100%;background:#2c63ef;transition:.2s}
+.terms{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  font-size:10px;
+  color:#667085;
+  line-height:1.55;
+  margin:4px 0 18px;
+}
+.terms input{margin-top:2px}
+.terms a{color:#245cea;font-weight:700}
+.submit-btn{
+  width:100%;
+  height:50px;
+  border:0;
+  border-radius:9px;
+  background:linear-gradient(100deg,#255eea,#2d72ff);
+  color:white;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 10px 22px rgba(44,99,239,.20);
+}
+.submit-btn:hover{transform:translateY(-1px)}
+.login-link{
+  text-align:center;
+  font-size:10px;
+  color:#7c8799;
+  margin-top:17px;
+}
+.login-link a{color:#245cea;font-weight:800}
+.toast{
+  position:fixed;
+  right:18px;bottom:18px;
+  background:#111827;color:#fff;
+  padding:12px 16px;border-radius:10px;
+  font-size:11px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  opacity:0;transform:translateY(70px);
+  transition:.25s;z-index:100;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:760px){
+  .register-shell{display:block}
+  .brand-panel{min-height:auto;padding:35px 22px 30px}
+  .brand-logo{width:80px;height:80px;margin-bottom:18px}
+  .brand-logo span{width:48px;height:48px;font-size:16px}
+  .brand-panel h2{font-size:21px}
+  .features{margin-top:23px}
+  .form-panel{padding:30px 20px 42px}
+}
+@media(max-width:430px){
+  .email-row{grid-template-columns:1fr}
+  .email-row .code-btn{height:46px}
+  .phone-row{grid-template-columns:94px 1fr}
+}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+<script src="firebase.js"></script>
+</head>
+<body>
+<div class="register-shell">
+  <aside class="brand-panel">
+    <div class="brand-logo"><span>L2K</span></div>
+    <h2>L2K TOP UP STORE</h2>
+    <p>Join thousands of gamers enjoying fast, easy and secure game top-ups.</p>
+
+    <div class="features">
+      <div class="feature"><span class="feature-icon">✓</span><span>Instant Transactions</span></div>
+      <div class="feature"><span class="feature-icon">▢</span><span>Secure & Protected</span></div>
+      <div class="feature"><span class="feature-icon">♬</span><span>24/7 Support</span></div>
+    </div>
+  </aside>
+
+  <main class="form-panel">
+    <div class="form-wrap">
+      <a class="back-home" href="index.html">← Back to Home</a>
+
+      <div class="form-head">
+        <h1>Create Account</h1>
+        <p>Start your journey with us today</p>
+      </div>
+
+      <button class="google-btn" type="button" onclick="demoGoogle()">
+        <span class="google-g">G</span>
+        <span>Sign up with Google</span>
+      </button>
+
+      <div class="divider">OR CONTINUE WITH EMAIL</div>
+
+      <form id="registerForm">
+        <div class="field">
+          <label>♙ Username</label>
+          <input class="input" name="username" minlength="3" required placeholder="Choose a username">
+        </div>
+
+        <div class="field">
+          <label>✉ Email Address</label>
+          <div class="email-row">
+            <input class="input" type="email" name="email" required placeholder="Enter your email">
+            <button class="code-btn" type="button" onclick="sendCode()">➤ Send Code</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>☎ WhatsApp Number</label>
+          <div class="phone-row">
+            <select name="country">
+              <option value="+94">LK +94</option>
+            </select>
+            <input class="input" name="phone" inputmode="numeric" pattern="[0-9]{9,10}" required placeholder="Enter phone number">
+          </div>
+          <div class="helper">Enter your number without leading zero</div>
+        </div>
+
+        <div class="field">
+          <label>▢ Password</label>
+          <div class="password-wrap">
+            <input id="password" class="input" type="password" name="password" minlength="6" required placeholder="Create a strong password">
+            <button class="eye" type="button" onclick="togglePassword()">◉</button>
+          </div>
+          <div class="strength"><span id="strengthBar"></span></div>
+        </div>
+
+        <div class="field">
+          <label>▢ Confirm Password</label>
+          <input id="confirmPassword" class="input" type="password" minlength="6" required placeholder="Confirm your password">
+        </div>
+
+        <label class="terms">
+          <input id="terms" type="checkbox" required>
+          <span>I agree to the <a href="terms.html">Terms & Conditions</a> and <a href="privacy.html">Privacy Policy</a>.</span>
+        </label>
+
+        <button class="submit-btn" type="submit">CREATE ACCOUNT →</button>
+      </form>
+
+      <div class="login-link">Already have an account? <a href="#">Login</a></div>
+    </div>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+async function demoGoogle(){
+  try{
+    if(!window.auth || !window.db) throw new Error('Firebase is not loaded. Check firebase.js and Firebase SDK files.');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await window.auth.signInWithPopup(provider);
+    const user = result.user;
+    await window.db.ref('users/' + user.uid).update({
+      username: user.displayName || '',
+      email: user.email || '',
+      photoURL: user.photoURL || '',
+      provider: 'google',
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+    toast('Google account connected successfully');
+    setTimeout(()=>location.href='index.html',900);
+  }catch(err){
+    console.error(err);
+    toast(err.message || 'Google sign-up failed');
+  }
+}
+function sendCode(){
+  const email=document.querySelector('[name=email]').value.trim();
+  if(!email){toast('Enter your email address first');return}
+  toast('Email/password registration is enabled. Verification email is sent after account creation.');
+}
+function togglePassword(){
+  const p=document.getElementById('password');
+  p.type=p.type==='password'?'text':'password';
+}
+document.getElementById('password').addEventListener('input',e=>{
+  const v=e.target.value;
+  let score=0;
+  if(v.length>=6) score++;
+  if(/[A-Z]/.test(v)) score++;
+  if(/[0-9]/.test(v)) score++;
+  if(/[^A-Za-z0-9]/.test(v)) score++;
+  document.getElementById('strengthBar').style.width=(score*25)+'%';
+});
+document.getElementById('registerForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const form=e.currentTarget;
+  const username=form.username.value.trim();
+  const email=form.email.value.trim();
+  const phone=form.phone.value.trim();
+  const country=form.country.value;
+  const password=document.getElementById('password').value;
+  const confirm=document.getElementById('confirmPassword').value;
+
+  if(password!==confirm){toast('Passwords do not match');return}
+
+  try{
+    const cred=await window.auth.createUserWithEmailAndPassword(email,password);
+    await cred.user.updateProfile({displayName:username});
+    await window.db.ref('users/'+cred.user.uid).set({
+      username,
+      email,
+      whatsapp: country + phone,
+      provider:'password',
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+    await cred.user.sendEmailVerification();
+    toast('Account created! Verification email sent.');
+    setTimeout(()=>location.href='index.html',1200);
+  }catch(err){
+    console.error(err);
+    toast(err.message || 'Could not create account');
+  }
+});
+</script>
+<script src="animations.js"></script>
+</body>
+</html>
