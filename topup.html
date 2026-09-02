@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Game Top-Up Center — L2K TOP UP STORE</title>
+<link rel="icon" href="logo.svg">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+<script src="firebase.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,Arial,sans-serif;background:#f4f7fc;color:#0e1830;min-height:100vh}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+.container{width:min(1120px,calc(100% - 28px));margin:auto}
+.topbar{height:62px;background:#fff;display:flex;align-items:center;border-bottom:1px solid #e9eef5;position:sticky;top:0;z-index:50}
+.nav{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-family:Poppins;font-weight:900;font-size:18px}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#087cf7,#08c2e8);display:grid;place-items:center;color:#fff;font-size:11px}
+.menu{width:40px;height:40px;border:1px solid #e3e8ef;background:#fff;border-radius:10px;font-size:20px;cursor:pointer}
+
+.hero-wrap{padding:28px 0 18px}
+.hero{
+  position:relative;overflow:hidden;border-radius:22px;padding:34px 38px 30px;color:#fff;
+  background:
+  linear-gradient(rgba(20,37,86,.50),rgba(20,55,100,.45)),
+  radial-gradient(circle at 70% 30%,rgba(48,180,255,.30),transparent 30%),
+  linear-gradient(135deg,#14213f,#2557a7 58%,#32b4d6);
+  box-shadow:0 18px 40px rgba(34,77,160,.15)
+}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.07),transparent 70%)}
+.hero-content{position:relative;z-index:2;text-align:center}
+.pill{display:inline-flex;padding:7px 14px;border-radius:30px;border:1px solid rgba(255,255,255,.33);background:rgba(255,255,255,.10);font-size:9px;font-weight:900;letter-spacing:.5px}
+.hero h1{font-family:Poppins;font-size:clamp(30px,5vw,51px);line-height:1.05;margin:14px 0 9px;letter-spacing:-1.6px}
+.hero p{font-size:12px;color:#eef7ff}
+.hero-stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:17px 0 20px}
+.stat{padding:8px 12px;border-radius:20px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.15);font-size:9px;font-weight:800}
+.choose{font-size:10px;font-weight:900;letter-spacing:1px;margin-top:8px}
+.hero h2{font-family:Poppins;font-size:28px;margin:8px 0 3px}
+.hero .sub{font-size:10px;color:#dbeaff}
+.search-wrap{max-width:760px;margin:18px auto 0;position:relative}
+.search{width:100%;height:54px;border:0;border-radius:30px;padding:0 22px 0 48px;outline:none;font-size:13px;box-shadow:0 8px 22px rgba(0,0,0,.15)}
+.search-icon{position:absolute;left:19px;top:50%;transform:translateY(-50%);color:#77859b}
+
+.games-section{padding:0 0 34px}
+.game-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.game-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e5ebf3;box-shadow:0 9px 24px rgba(32,57,99,.08);cursor:pointer;transition:.22s;position:relative}
+.game-card:hover{transform:translateY(-4px);box-shadow:0 15px 34px rgba(32,57,99,.14)}
+.game-cover{height:180px;position:relative;display:flex;align-items:flex-end;padding:14px;color:#fff;background-size:cover;background-position:center}
+.game-cover:before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(7,15,31,.68))}
+.game-cover span{position:relative;z-index:2;font-size:42px}
+.active{position:absolute;right:9px;top:9px;z-index:3;background:#19c68c;color:white;font-size:8px;font-weight:900;padding:5px 8px;border-radius:20px}
+.game-body{padding:10px 12px}
+.game-body h3{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game-body p{font-size:9px;color:#8490a2;margin-top:4px}
+
+.top-spenders{margin:10px 0 30px;background:#fff;border:1px solid #e1e8f2;border-radius:22px;padding:24px;box-shadow:0 14px 32px rgba(38,72,140,.08)}
+.spender-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:24px}
+.spender-title{display:flex;align-items:center;gap:13px}
+.spender-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#0c79f7,#08bddf);display:grid;place-items:center;color:white}
+.spender-head h2{font-family:Poppins;font-size:20px}.spender-head p{font-size:10px;color:#8c96a6}
+.leader-btn{border:0;border-radius:24px;background:linear-gradient(90deg,#2471ed,#0bb9da);color:white;padding:11px 18px;font-size:9px;font-weight:900}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:14px;align-items:end;max-width:700px;margin:auto}
+.rank-card{border:1px solid #e4e9f0;border-radius:16px;overflow:hidden;text-align:center;background:#fff}
+.rank-top{padding:18px 12px}.avatar{width:66px;height:66px;margin:0 auto 9px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#d5e7ff,#f7fbff);border:3px solid #b8d6ff;font-weight:900;font-size:18px}
+.rank-card.center .avatar{width:82px;height:82px;border-color:#2a78f1}.rank-card h3{font-size:11px}.rank-card small{font-size:8px;color:#6990c9;font-weight:900}
+.rank-num{padding:13px;font-size:22px;font-weight:900;color:#fff;background:linear-gradient(135deg,#9eabc0,#bcc8d8)}
+.rank-card.center .rank-num{background:linear-gradient(135deg,#245ce8,#10b5cf)}
+.rank-card.third .rank-num{background:linear-gradient(135deg,#d79a59,#efbc7f)}
+
+.app-box{background:#fff;border:1px solid #e5ebf3;border-radius:22px;padding:34px 20px;text-align:center;margin-bottom:42px;box-shadow:0 14px 30px rgba(38,72,140,.06)}
+.app-box h2{font-family:Poppins;font-size:24px}.app-box p{font-size:10px;color:#8993a3;margin:7px 0 18px}.download-btn{display:inline-flex;align-items:center;gap:7px;border:0;background:linear-gradient(90deg,#2474ef,#0bbad6);color:#fff;border-radius:24px;padding:12px 18px;font-size:10px;font-weight:900}
+
+.footer{background:#1d2328;color:#77818c;padding:38px 0 22px}.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1.2fr;gap:34px}.footer h4{color:#fff;font-size:12px;margin-bottom:10px}.footer p,.footer a{font-size:9px;line-height:1.65;color:#7c8792}.footer-links{display:flex;flex-direction:column;gap:3px}.footer-bottom{border-top:1px solid #ffffff14;margin-top:26px;padding-top:18px;font-size:8px;display:flex;justify-content:space-between;gap:18px}
+
+@media(max-width:850px){.game-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.hero{padding:28px 18px 24px;border-radius:16px}.game-grid{grid-template-columns:repeat(2,1fr)}.game-cover{height:150px}.podium{grid-template-columns:1fr}.rank-card.center{order:-1}.footer-grid{grid-template-columns:1fr}.spender-head{align-items:flex-start}.footer-bottom{flex-direction:column}}
+
+@media(max-width:560px){
+  .container{width:calc(100% - 16px)!important}
+  .topbar{height:56px}
+  .brand{font-size:12px}
+  .hero-wrap{padding:12px 0 14px}
+  .hero{padding:24px 14px 20px;border-radius:14px}
+  .hero h1{font-size:31px;letter-spacing:-1px}
+  .hero p{font-size:10px}
+  .hero h2{font-size:22px}
+  .hero-stats{gap:6px}
+  .stat{font-size:8px;padding:7px 9px}
+  .search{height:48px;font-size:12px}
+  .game-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .game-cover{height:132px}
+  .game-body{padding:9px}
+  .game-body h3{font-size:10px}
+  .game-body p{font-size:8px}
+  .top-spenders{padding:16px;border-radius:16px}
+  .spender-head{flex-direction:column;align-items:flex-start}
+  .leader-btn{width:100%}
+  .podium{grid-template-columns:1fr;gap:10px}
+  .rank-card.center{order:-1}
+  .app-box{padding:26px 14px;border-radius:16px}
+  .app-box h2{font-size:20px}
+}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">L2K</span>L2K TOP UP STORE</a>
+    <button class="menu" onclick="location.href='index.html'">☰</button>
+  </div>
+</header>
+
+<main>
+  <div class="container hero-wrap">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="pill">⚡ INSTANT AUTOMATED DELIVERY</div>
+        <h1>Game Top-Up Center</h1>
+        <p>The fastest & most secure way to top up your favourite games.</p>
+        <div class="hero-stats">
+          <span class="stat">⚡ 5-Sec Delivery</span>
+          <span class="stat">🛡 100% Secure</span>
+          <span class="stat">💬 24/7 Support</span>
+        </div>
+        <div class="choose">— CHOOSE YOUR GAME —</div>
+        <h2>Popular Games</h2>
+        <div class="sub">Select your game below — instant, secure top-up in seconds.</div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" placeholder="Search games (e.g. Free Fire)..."></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="games-section">
+    <div class="container">
+      <div id="gameGrid" class="game-grid"></div>
+    </div>
+  </section>
+
+  <section class="container top-spenders">
+    <div class="spender-head">
+      <div class="spender-title"><div class="spender-icon">♛</div><div><h2>Top Spenders</h2><p>Most valued customers this month</p></div></div>
+      <button class="leader-btn">View Leaderboard →</button>
+    </div>
+    <div class="podium">
+      <article class="rank-card">
+        <div class="rank-top"><div class="avatar">2</div><h3>Customer #2</h3><small>2ND PLACE</small></div><div class="rank-num">2</div>
+      </article>
+      <article class="rank-card center">
+        <div class="rank-top"><div class="avatar">L2K</div><h3>Top Customer</h3><small>TOP SPENDER</small></div><div class="rank-num">1</div>
+      </article>
+      <article class="rank-card third">
+        <div class="rank-top"><div class="avatar">3</div><h3>Customer #3</h3><small>3RD PLACE</small></div><div class="rank-num">3</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="container app-box">
+    <h2>Download Our App</h2>
+    <p>Get exclusive deals and faster checkout.</p>
+    <button class="download-btn" onclick="alert('Add your APK or Play Store link here')">▶ Download App</button>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><h4>About Us</h4><p>We provide fast, automated and secure game top-ups and digital services for Sri Lankan gamers.</p></div>
+      <div><h4>Quick Links</h4><div class="footer-links"><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="profile.html">Profile</a><a href="terms.html">Terms & Conditions</a><a href="privacy.html">Privacy Policy</a><a href="login.html">Login</a></div></div>
+      <div><h4>Contact Us</h4><div class="footer-links"><a href="contact.html">WhatsApp Support</a><a href="contact.html">Telegram Support</a><a href="mailto:info@l2ktopup.store">info@l2ktopup.store</a></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 L2K TOP UP STORE. All rights reserved.</span><span>Fast • Secure • Trusted</span></div>
+  </div>
+</footer>
+
+<script>
+
+const defaultGames = [
+  {id:'freefire-sg',name:'Free Fire (SG/MY)',imageUrl:'',fallback:'linear-gradient(135deg,#e86b35,#401431)'},
+  {id:'pubg',name:'PUBG Mobile',imageUrl:'',fallback:'linear-gradient(135deg,#4ba8e8,#212a38)'},
+  {id:'delta',name:'Delta Force Mobile',imageUrl:'',fallback:'linear-gradient(135deg,#455a64,#111827)'},
+  {id:'blood',name:'Blood Strike',imageUrl:'',fallback:'linear-gradient(135deg,#19b6cd,#d94b4b)'},
+  {id:'farlight',name:'Farlight 84',imageUrl:'',fallback:'linear-gradient(135deg,#19b8a5,#e6f5ed)'},
+  {id:'newstate',name:'PUBG New State',imageUrl:'',fallback:'linear-gradient(135deg,#f3b724,#28384f)'},
+  {id:'freefire-id',name:'Free Fire (Indonesia)',imageUrl:'',fallback:'linear-gradient(135deg,#58d8e8,#3151c8)'},
+  {id:'wwm',name:'Where Winds Meet',imageUrl:'',fallback:'linear-gradient(135deg,#0b1727,#715b40)'},
+  {id:'valorant',name:'Valorant',imageUrl:'',fallback:'linear-gradient(135deg,#fc4e59,#283047)'}
+];
+
+let games = [...defaultGames];
+
+function loadGamesFromFirebase(){
+  if(typeof db==='undefined'){renderGames();return;}
+  db.ref('site/gameCards').on('value',snap=>{
+    const saved=snap.val()||{};
+    games=defaultGames.map(g=>({...g,...(saved[g.id]||{})}));
+    renderGames(document.getElementById('search')?.value||'');
+  });
+}
+
+function renderGames(filter=''){
+  const grid=document.getElementById('gameGrid');
+  const list=games.filter(g=>g.name.toLowerCase().includes(filter.toLowerCase()));
+  grid.innerHTML=list.map(g=>{
+    const bg = g.imageUrl
+      ? `linear-gradient(transparent 45%,rgba(7,15,31,.35)),url("${g.imageUrl}")`
+      : g.fallback;
+    return `
+    <article class="game-card" onclick="openGame('${g.id}')">
+      <div class="game-cover" style="background-image:${g.imageUrl ? `url('${g.imageUrl}')` : 'none'};background:${g.imageUrl ? `linear-gradient(transparent 45%,rgba(7,15,31,.38)),url('${g.imageUrl}') center/cover no-repeat` : g.fallback}">
+        <div class="active">● ACTIVE</div>
+      </div>
+      <div class="game-body"><h3>${g.name}</h3><p>Instant top-up available</p></div>
+    </article>`;
+  }).join('');
+}
+
+function openGame(id){
+  const g=games.find(x=>x.id===id);
+  if(!g)return;
+  if(id==='freefire-sg'){location.href='freefiresg.html';return}
+  localStorage.setItem('selectedGame',g.name);
+  location.href='game-order.html?game='+encodeURIComponent(g.name);
+}
+
+document.getElementById('search').addEventListener('input',e=>renderGames(e.target.value));
+loadGamesFromFirebase();
+
+</script>
+<script src="animations.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Customer Reviews — L2K TOP UP STORE</title>
+<link rel="icon" href="logo.svg">
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase.js"></script>
+<script src="reviews.js"></script>
+<style>
+.reviews-page{padding:45px 0 70px;background:#f5f8fd;min-height:calc(100vh - 64px)}
+.reviews-page-head{text-align:center;max-width:650px;margin:0 auto 30px}
+.reviews-page-head h1{font-family:Poppins;font-size:34px}
+.reviews-page-head h1 span{color:#078cff}
+.reviews-page-head p{font-size:11px;color:#7d899a;margin-top:7px}
+.allreviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.allreviews-grid .review-card{min-width:0;min-height:240px}
+.review-summary{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:18px 0 30px}
+.review-summary span{background:#fff;border:1px solid #e2e8f1;border-radius:20px;padding:8px 12px;font-size:9px;font-weight:800}
+@media(max-width:850px){.allreviews-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.allreviews-grid{grid-template-columns:1fr}.reviews-page-head h1{font-size:27px}}
+
+@media(max-width:560px){
+  .reviews-page{padding:28px 0 45px}
+  .reviews-page-head h1{font-size:26px}
+  .allreviews-grid{grid-template-columns:1fr}
+  .review-card{min-width:0!important;width:100%}
+}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="container nav">
+    <a class="logo" href="index.html"><span class="logo-mark">L2K</span>L2K TOP UP STORE</a>
+    <div class="nav-actions">
+      <a class="btn btn-light" href="index.html">← HOME</a>
+      <button class="btn btn-primary" onclick="location.href='index.html#reviews'">WRITE REVIEW</button>
+    </div>
+  </div>
+</header>
+
+<main class="reviews-page">
+  <div class="container">
+    <div class="reviews-page-head">
+      <div class="kicker">— COMMUNITY —</div>
+      <h1>All Customer <span>Reviews</span></h1>
+      <p>See what customers are saying about L2K TOP UP STORE.</p>
+    </div>
+
+    <div class="review-summary">
+      <span id="reviewCount">0 Reviews</span>
+      <span id="reviewAverage">Average 0.0 ★</span>
+    </div>
+
+    <div id="allReviewsGrid" class="allreviews-grid">
+      <div class="review-loading">Loading reviews...</div>
+    </div>
+  </div>
+</main>
+
+<script>
+function renderAllReviews(reviews){
+  const grid = document.getElementById('allReviewsGrid');
+  document.getElementById('reviewCount').textContent = reviews.length + ' Review' + (reviews.length===1?'':'s');
+  const avg = reviews.length ? reviews.reduce((s,r)=>s+Number(r.rating||0),0)/reviews.length : 0;
+  document.getElementById('reviewAverage').textContent = 'Average ' + avg.toFixed(1) + ' ★';
+
+  if(!reviews.length){
+    grid.innerHTML = '<div class="empty">No customer reviews yet.</div>';
+    return;
+  }
+
+  grid.innerHTML = reviews.map(r => `
+    <article class="review-card">
+      <div class="review-card-top">
+        <div class="review-avatar">${L2KReviews.escape((r.name || 'C').charAt(0).toUpperCase())}</div>
+        <div>
+          <h3>${L2KReviews.escape(r.name || 'Customer')}</h3>
+          <small>${r.city ? '📍 '+L2KReviews.escape(r.city) : 'Verified customer'}</small>
+        </div>
+      </div>
+      <div class="review-stars">${L2KReviews.stars(r.rating)}</div>
+      <p>“${L2KReviews.escape(r.message)}”</p>
+      <small style="display:block;margin-top:14px;color:#9aa4b2">
+        ${r.createdAt ? new Date(r.createdAt).toLocaleDateString() : ''}
+      </small>
+    </article>
+  `).join('');
+}
+
+L2KReviews.listenApproved(renderAllReviews);
+</script>
+<script src="animations.js"></script>
+</body>
+</html>
