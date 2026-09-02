@@ -1,0 +1,390 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Panel | L2K TOP UP STORE</title>
+
+<style>
+body{background:#07101e;color:#fff}
+.admin-wrap{width:min(980px,calc(100% - 24px));margin:30px auto 70px}
+.admin-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+.admin-card{background:#0d1728;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px;box-shadow:0 18px 40px rgba(0,0,0,.25);margin-bottom:18px}
+.admin-card h2{margin-top:0}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.admin-list{display:grid;gap:12px}
+.game-row{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;background:#0a1322;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:12px}
+.game-thumb{width:72px;height:72px;border-radius:14px;background:#14223a center/cover no-repeat;display:grid;place-items:center;font-size:28px}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.small-btn{border:0;border-radius:10px;padding:9px 11px;font-weight:800;cursor:pointer}
+.save{background:#1ab7ff;color:#04101a}.danger{background:#ff5d7d;color:#fff}.muted{background:#18263c;color:#d6e2f3}
+.status{font-size:12px;color:#8fa3bc}
+@media(max-width:650px){.admin-grid{grid-template-columns:1fr}.game-row{grid-template-columns:58px 1fr}.game-thumb{width:58px;height:58px}.row-actions{grid-column:1/-1}}
+
+/* ===== L2K Global Animations ===== */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+@keyframes l2kFadeUp{
+  from{opacity:0;transform:translateY(26px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes l2kFadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes l2kFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+@keyframes l2kPulseGlow{
+  0%,100%{box-shadow:0 0 0 rgba(33,199,255,0)}
+  50%{box-shadow:0 0 30px rgba(33,199,255,.24)}
+}
+@keyframes l2kShine{
+  0%{transform:translateX(-140%) rotate(18deg)}
+  100%{transform:translateX(240%) rotate(18deg)}
+}
+@keyframes l2kGradientMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes l2kSpinSlow{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+.l2k-reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.l2k-reveal.l2k-visible{opacity:1;transform:none}
+.l2k-stagger>*{opacity:0;transform:translateY(18px)}
+.l2k-stagger.l2k-visible>*{animation:l2kFadeUp .65s ease forwards}
+.l2k-stagger.l2k-visible>*:nth-child(2){animation-delay:.08s}
+.l2k-stagger.l2k-visible>*:nth-child(3){animation-delay:.16s}
+.l2k-stagger.l2k-visible>*:nth-child(4){animation-delay:.24s}
+.l2k-stagger.l2k-visible>*:nth-child(5){animation-delay:.32s}
+.l2k-stagger.l2k-visible>*:nth-child(6){animation-delay:.40s}
+.brand-mark,.brand-logo,.logo-big{animation:l2kFloat 4s ease-in-out infinite}
+.btn,.small-btn,.google-btn,.login-btn,.submit,.play-btn,.game-card,.card,.dark-card,.product-card,.reason-card,.reseller-card,.contact-box,.admin-card{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,filter .22s ease
+}
+.btn:hover,.small-btn:hover,.google-btn:hover,.login-btn:hover,.submit:hover,.play-btn:hover{
+  transform:translateY(-2px) scale(1.01)
+}
+.game-card:hover,.card:hover,.dark-card:hover,.product-card:hover,.reason-card:hover,.reseller-card:hover,.contact-box:hover,.admin-card:hover{
+  transform:translateY(-6px)
+}
+.hero h1,.page-hero h1,.game-center-hero h1,.right h1{
+  animation:l2kFadeUp .8s ease both
+}
+.hero p,.page-hero p,.game-center-hero p{
+  animation:l2kFadeIn 1s ease .18s both
+}
+.hero .eyebrow,.gc-pill{
+  animation:l2kPulseGlow 2.8s ease-in-out infinite
+}
+.hero::before{animation:l2kFloat 7s ease-in-out infinite}
+.hero::after{animation:l2kFloat 5s ease-in-out infinite reverse}
+.btn-primary,.login-btn,.submit,.play-btn,.code-btn{
+  background-size:200% 200%!important;
+  animation:l2kGradientMove 5s ease infinite
+}
+.icon-box,.round-icon,.mini-icon,.lb-icon,.contact-dot{
+  animation:l2kFloat 4.5s ease-in-out infinite
+}
+.game-cover,.product-visual,.banner,.hero,.game-center-hero{
+  position:relative;
+  overflow:hidden
+}
+.game-cover::after,.product-visual::after,.banner::after,.game-center-hero::after{
+  content:"";position:absolute;top:-30%;left:-35%;width:28%;height:160%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  transform:rotate(18deg);
+  animation:l2kShine 6s ease-in-out infinite;
+  pointer-events:none
+}
+.avatar{animation:l2kPulseGlow 3s ease-in-out infinite}
+input:focus,select:focus,textarea:focus{
+  transform:translateY(-1px);
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease
+}
+.navbar,.topbar{
+  animation:l2kFadeIn .5s ease both
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .l2k-reveal,.l2k-stagger>*{opacity:1!important;transform:none!important}
+}
+
+
+.admin-login-gate{
+ position:fixed;inset:0;z-index:99999;display:grid;place-items:center;
+ padding:20px;background:radial-gradient(circle at top,#12315c 0,#07111f 45%,#03070d 100%);
+}
+.admin-login-box{
+ width:min(410px,100%);background:rgba(10,22,39,.94);border:1px solid rgba(85,213,255,.2);
+ border-radius:24px;padding:26px;box-shadow:0 25px 80px rgba(0,0,0,.5);color:#fff;
+}
+.admin-login-logo{
+ width:64px;height:64px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;
+ background:linear-gradient(135deg,#1767d8,#20c8ef);font-weight:950;font-size:18px;
+ box-shadow:0 0 30px rgba(32,200,239,.25)
+}
+.admin-login-box h1{text-align:center;margin:0 0 7px;font-size:25px}
+.admin-login-box .sub{text-align:center;color:#9fb0c6;font-size:13px;margin:0 0 22px}
+.admin-login-field{margin-bottom:14px}
+.admin-login-field label{display:block;font-size:12px;font-weight:800;color:#b7c7db;margin-bottom:7px}
+.admin-login-field input{
+ width:100%;height:48px;border:1px solid #243a55;background:#071321;color:#fff;border-radius:12px;
+ padding:0 13px;outline:none
+}
+.admin-login-field input:focus{border-color:#20c8ef;box-shadow:0 0 0 3px rgba(32,200,239,.1)}
+.admin-login-submit{
+ width:100%;height:48px;border:0;border-radius:12px;background:linear-gradient(90deg,#1767d8,#20c8ef);
+ color:#fff;font-weight:900;cursor:pointer
+}
+.admin-login-error{min-height:18px;text-align:center;color:#ff6b81;font-size:12px;margin-top:11px}
+.admin-login-back{display:block;text-align:center;color:#8dcfff;text-decoration:none;font-size:12px;margin-top:14px}
+.admin-logout-btn{
+ border:0;border-radius:9px;background:#3a1520;color:#ff9aaa;padding:8px 11px;font-weight:800;cursor:pointer
+}
+
+</style>
+
+</head><body>
+
+<div id="adminLoginGate" class="admin-login-gate">
+  <div class="admin-login-box">
+    <div class="admin-login-logo">L2K</div>
+    <h1>Admin Login</h1>
+    <p class="sub">L2K TOP UP STORE • Admin Panel</p>
+    <form id="adminLoginForm">
+      <div class="admin-login-field">
+        <label>Username</label>
+        <input id="adminUsername" autocomplete="username" placeholder="Enter admin username" required>
+      </div>
+      <div class="admin-login-field">
+        <label>Password</label>
+        <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Enter admin password" required>
+      </div>
+      <button class="admin-login-submit" type="submit">Login to Admin Panel</button>
+      <div id="adminLoginError" class="admin-login-error"></div>
+    </form>
+    <a class="admin-login-back" href="index.html">← Back to Website</a>
+  </div>
+</div>
+
+<div class="admin-wrap">
+  <div class="admin-head"><div><h1 style="margin:0">L2K Admin Panel</h1><div class="status">Manage game cards & logos</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="index.html" style="color:#55d5ff">← Website</a><a href="profile.html" style="color:#55d5ff">My Profile</a><button class="admin-logout-btn" onclick="l2kAdminLogout()">Log Out</button></div></div>
+
+  
+  
+  <div class="admin-card">
+    <h2>Welcome Popup Ad Banner</h2>
+    <p class="status">Upload the popup banner shown when visitors first open the website.</p>
+    <div style="display:grid;gap:12px">
+      <div id="popupBannerPreview" style="width:min(100%,360px);aspect-ratio:4/5;border-radius:18px;background:#0e1627 center/cover no-repeat;border:1px solid #283752;display:grid;place-items:center;color:#7f8da3;overflow:hidden">No Banner</div>
+      <input id="popupBannerFile" type="url" placeholder="Paste image URL">
+      <label style="display:flex;gap:8px;align-items:center"><input id="popupBannerActive" type="checkbox" checked> Enable popup banner</label>
+      <button id="uploadPopupBanner" class="small-btn save">Upload Popup Banner</button>
+      <button id="removePopupBanner" class="small-btn" style="background:#3b1720;color:#ffb4bf">Disable / Remove Banner</button>
+      <div id="popupBannerMsg" class="status"></div>
+    </div>
+  </div>
+
+<div class="admin-card">
+    <h2>Website Logo</h2>
+    <p class="status">Upload the logo used instead of the L2K text badge across the website.</p>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div id="logoPreview" class="game-thumb">L2K</div>
+      <input id="siteLogoFile" type="url" placeholder="Paste image URL">
+      <button id="uploadSiteLogo" class="small-btn save">Upload Website Logo</button>
+    </div>
+    <div id="logoMsg" class="status" style="margin-top:10px"></div>
+  </div>
+
+<div class="admin-card">
+    <h2>Add New Game</h2>
+    <div class="admin-grid">
+      <div><label>Game Name</label><input id="name" placeholder="e.g. Free Fire MAX"></div>
+      <div><label>Page Link</label><input id="link" placeholder="freefire.html"></div>
+      <div><label>Order Number</label><input id="order" type="number" value="10"></div>
+      <div><label>Active</label><select id="active"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+      <div style="grid-column:1/-1"><label>Game Logo / Cover</label><input id="image" type="url" placeholder="Paste image URL"></div>
+    </div>
+    <button id="addGame" class="small-btn save" style="margin-top:14px">Add Game</button>
+    <div id="msg" class="status" style="margin-top:10px"></div>
+  </div>
+
+  <div class="admin-card">
+    <h2>Existing Games</h2>
+    <div id="gameList" class="admin-list"></div>
+  </div>
+</div>
+
+
+
+<script>
+(function(){
+  const selectors = [
+    '.section','.banner','.card','.dark-card','.product-card','.form-wrap',
+    '.contact-box','.faq','.reason-card','.reseller-card','.cta-box','.leaderboard',
+    '.app-box','.auth-card','.admin-card','.hero-content','.page-hero .container',
+    '.game-center-hero','.games-grid','.profile-head'
+  ];
+  const nodes = [];
+  selectors.forEach(sel=>{
+    document.querySelectorAll(sel).forEach(el=>{
+      if(!el.classList.contains('l2k-reveal')) {
+        el.classList.add('l2k-reveal');
+        nodes.push(el);
+      }
+    });
+  });
+
+  document.querySelectorAll('.service-grid,.dark-cards,.product-grid,.games-grid,.reason-grid,.reseller-grid,.podium,.stats')
+    .forEach(el=>el.classList.add('l2k-stagger'));
+
+  const reveal = (el)=>el.classList.add('l2k-visible');
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        reveal(entry.target);
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'}) : null;
+
+  document.querySelectorAll('.l2k-reveal,.l2k-stagger').forEach(el=>{
+    if(io) io.observe(el); else reveal(el);
+  });
+
+  // Ripple click effect on interactive controls
+  document.querySelectorAll('button,.btn,.small-btn,.google-btn,.login-btn,.submit,.play-btn').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      const r=document.createElement('span');
+      const rect=this.getBoundingClientRect();
+      const size=Math.max(rect.width,rect.height)*1.4;
+      r.style.cssText=`position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:rgba(255,255,255,.25);left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;transform:scale(0);animation:l2kRipple .55s ease-out;pointer-events:none;`;
+      const oldPos=getComputedStyle(this).position;
+      if(oldPos==='static') this.style.position='relative';
+      this.style.overflow='hidden';
+      this.appendChild(r);
+      setTimeout(()=>r.remove(),600);
+    });
+  });
+
+  const style=document.createElement('style');
+  style.textContent='@keyframes l2kRipple{to{transform:scale(1);opacity:0}}';
+  document.head.appendChild(style);
+})();
+</script>
+
+
+<script>
+(function(){
+  const USERNAME = 'L2KADMIN';
+  const PASSWORD = 'L2K@2026';
+  const gate = document.getElementById("adminLoginGate");
+
+  if(sessionStorage.getItem("l2kAdminLoggedIn")==="yes"){
+    gate.style.display="none";
+  }
+
+  document.getElementById("adminLoginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const u=document.getElementById("adminUsername").value.trim();
+    const p=document.getElementById("adminPassword").value;
+    const err=document.getElementById("adminLoginError");
+    if(u===USERNAME && p===PASSWORD){
+      sessionStorage.setItem("l2kAdminLoggedIn","yes");
+      gate.style.display="none";
+      err.textContent="";
+    }else{
+      err.textContent="Incorrect username or password.";
+      document.getElementById("adminPassword").value="";
+    }
+  });
+
+  window.l2kAdminLogout=function(){
+    sessionStorage.removeItem("l2kAdminLoggedIn");
+    location.reload();
+  };
+})();
+</script>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig={
+  apiKey:"AIzaSyBNRNmZJyxQiAj_AjNHLf43knOEmQ9e-FU",
+  authDomain:"l2k-top-up-store.firebaseapp.com",
+  databaseURL:"https://l2k-top-up-store-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"l2k-top-up-store"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const auth=firebase.auth();
+
+function esc(s){return String(s||"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]))}
+async function loadSiteLogoAdmin(){
+  const s=await db.ref("siteSettings/general/logoUrl").once("value");
+  const url=s.val()||"";
+  if(url){logoPreview.style.backgroundImage=`url("${url}")`;logoPreview.textContent=""}
+}
+uploadSiteLogo.onclick=async()=>{
+  const url=(siteLogoFile.value||"").trim();
+  if(!url){logoMsg.textContent="Enter a logo image URL first.";return}
+  await db.ref("siteSettings/general").update({logoUrl:url,updatedAt:Date.now()});
+  logoMsg.textContent="Website logo updated.";loadSiteLogoAdmin();
+};
+loadSiteLogoAdmin();
+
+async function refresh(){
+  const snap=await db.ref("games").once("value");
+  const data=snap.val()||{};
+  const rows=Object.entries(data).sort((a,b)=>(a[1].order||0)-(b[1].order||0));
+  const list=document.getElementById("gameList")||document.getElementById("gamesList");
+  if(!list)return;
+  list.innerHTML=rows.map(([id,g])=>`
+    <div class="game-row">
+      <div><b>${esc(g.name)}</b><div class="status">${esc(g.link||"")}</div></div>
+      <button class="small-btn" onclick="editGame('${id}')">Edit</button>
+      <button class="small-btn" onclick="deleteGame('${id}')">Delete</button>
+    </div>`).join("") || '<p class="status">No games yet.</p>';
+}
+window.deleteGame=async id=>{if(confirm("Delete this game?")){await db.ref("games/"+id).remove();refresh()}};
+window.editGame=async id=>{
+  const s=await db.ref("games/"+id).once("value"),g=s.val()||{};
+  if(document.getElementById("gameName"))gameName.value=g.name||"";
+  if(document.getElementById("gameLink"))gameLink.value=g.link||"";
+  if(document.getElementById("gameOrder"))gameOrder.value=g.order||0;
+  window.__editGameId=id;
+};
+const saveButton=[...document.querySelectorAll("button")].find(b=>/save game|add game/i.test(b.textContent||""));
+if(saveButton)saveButton.onclick=async()=>{
+  const payload={
+    name:(document.getElementById("gameName")?.value||"").trim(),
+    link:(document.getElementById("gameLink")?.value||"").trim(),
+    order:Number(document.getElementById("gameOrder")?.value||0),
+    active:document.getElementById("gameActive")?document.getElementById("gameActive").checked:true
+  };
+  const imageEl=document.getElementById("gameImage")||document.querySelector('input[placeholder*="image URL"]');
+  if(imageEl)payload.imageUrl=(imageEl.value||"").trim();
+  const ref=window.__editGameId?db.ref("games/"+window.__editGameId):db.ref("games").push();
+  await ref.update(payload);window.__editGameId=null;refresh();
+};
+refresh();
+
+// Popup banner via URL
+const popupUrlInput=document.getElementById("popupBannerFile");
+if(popupUrlInput) popupUrlInput.type="url";
+const popupUpload=[...document.querySelectorAll("button")].find(b=>/upload popup banner/i.test(b.textContent||""));
+if(popupUpload) popupUpload.onclick=async()=>{
+  const url=(popupUrlInput?.value||"").trim();
+  if(!url)return alert("Paste popup banner image URL first.");
+  await db.ref("siteSettings/popup").update({imageUrl:url,enabled:true,updatedAt:Date.now()});
+  alert("Popup banner updated.");
+};
+</script>
+
+</body></html>
