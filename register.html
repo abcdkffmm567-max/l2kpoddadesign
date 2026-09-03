@@ -301,6 +301,18 @@ a{text-decoration:none;color:inherit}
   .code-btn{height:46px}
 }
 
+
+.email-verify-status{
+  margin-top:8px;
+  font-size:10px;
+  font-weight:700;
+  color:#64748b;
+}
+.email-verify-status.ok{color:#16a34a}
+.email-verify-status.bad{color:#dc2626}
+.code-btn.verified{background:#16a34a}
+.code-btn:disabled{opacity:.72;cursor:not-allowed}
+
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -358,8 +370,9 @@ a{text-decoration:none;color:inherit}
           <label>✉ Email Address</label>
           <div class="email-row">
             <input class="input" type="email" name="email" required placeholder="Enter your email">
-            <button class="code-btn" type="button" onclick="sendCode()">➤ Send Code</button>
+            <button id="sendVerifyBtn" class="code-btn" type="button" onclick="sendVerificationLink()">➤ Send Link</button>
           </div>
+          <div id="emailVerifyStatus" class="email-verify-status">Verify your email before creating the account.</div>
         </div>
 
         <div class="field">
@@ -428,11 +441,104 @@ async function demoGoogle(){
     toast(err.message || 'Google sign-up failed');
   }
 }
-function sendCode(){
+function setEmailStatus(message, ok=false){
+  const el=document.getElementById('emailVerifyStatus');
+  if(!el) return;
+  el.textContent=message;
+  el.className='email-verify-status'+(ok?' ok':'');
+}
+
+async function sendVerificationLink(){
   const email=document.querySelector('[name=email]').value.trim();
   if(!email){toast('Enter your email address first');return}
-  toast('Email/password registration is enabled. Verification email is sent after account creation.');
+
+  try{
+    if(!window.auth) throw new Error('Firebase Authentication is not loaded.');
+
+    const btn=document.getElementById('sendVerifyBtn');
+    btn.disabled=true;
+    btn.textContent='Sending...';
+
+    // The link returns to this same register page.
+    const actionCodeSettings={
+      url: location.origin + location.pathname,
+      handleCodeInApp: true
+    };
+
+    await window.auth.sendSignInLinkToEmail(email, actionCodeSettings);
+    localStorage.setItem('l2kEmailForSignIn', email);
+    localStorage.removeItem('l2kVerifiedEmail');
+
+    setEmailStatus('Verification link sent. Open the link from your email to verify.');
+    toast('Verification link sent to your email');
+
+    btn.textContent='✓ Link Sent';
+    setTimeout(()=>{
+      btn.disabled=false;
+      btn.textContent='↻ Resend Link';
+    },4000);
+  }catch(err){
+    console.error(err);
+    const btn=document.getElementById('sendVerifyBtn');
+    btn.disabled=false;
+    btn.textContent='➤ Send Link';
+    setEmailStatus(err.message || 'Could not send verification link.');
+    toast(err.message || 'Could not send verification link');
+  }
 }
+
+async function completeEmailLinkVerification(){
+  try{
+    if(!window.auth || !window.auth.isSignInWithEmailLink(location.href)) return;
+
+    let email=localStorage.getItem('l2kEmailForSignIn') || '';
+    if(!email){
+      email=prompt('Enter the email address you used for verification:') || '';
+    }
+    email=email.trim();
+    if(!email) return;
+
+    const result=await window.auth.signInWithEmailLink(email, location.href);
+    localStorage.setItem('l2kVerifiedEmail', email.toLowerCase());
+    localStorage.removeItem('l2kEmailForSignIn');
+
+    const input=document.querySelector('[name=email]');
+    input.value=email;
+    input.readOnly=true;
+
+    const btn=document.getElementById('sendVerifyBtn');
+    btn.textContent='✓ Verified';
+    btn.disabled=true;
+    btn.classList.add('verified');
+
+    setEmailStatus('Email verified successfully.', true);
+    toast('Email verified successfully');
+
+    // Remove the one-time link query string from the address bar.
+    history.replaceState({}, document.title, location.origin + location.pathname);
+  }catch(err){
+    console.error(err);
+    setEmailStatus(err.message || 'Email verification failed.');
+    toast(err.message || 'Email verification failed');
+  }
+}
+
+window.addEventListener('load',()=>{
+  setTimeout(completeEmailLinkVerification,350);
+
+  const emailInput=document.querySelector('[name=email]');
+  emailInput.addEventListener('input',()=>{
+    const verified=(localStorage.getItem('l2kVerifiedEmail')||'').toLowerCase();
+    if(emailInput.value.trim().toLowerCase()!==verified){
+      setEmailStatus('Verify your email before creating the account.');
+      const btn=document.getElementById('sendVerifyBtn');
+      if(!btn.disabled){
+        btn.textContent='➤ Send Link';
+        btn.classList.remove('verified');
+      }
+    }
+  });
+});
 function togglePassword(){
   const p=document.getElementById('password');
   p.type=p.type==='password'?'text':'password';
@@ -458,19 +564,45 @@ document.getElementById('registerForm').addEventListener('submit',async e=>{
 
   if(password!==confirm){toast('Passwords do not match');return}
 
+  const verifiedEmail=(localStorage.getItem('l2kVerifiedEmail')||'').toLowerCase();
+  if(email.toLowerCase()!==verifiedEmail){
+    toast('Please verify your email first');
+    setEmailStatus('Open the verification link sent to your email before creating the account.');
+    return;
+  }
+
   try{
-    const cred=await window.auth.createUserWithEmailAndPassword(email,password);
-    await cred.user.updateProfile({displayName:username});
-    await window.db.ref('users/'+cred.user.uid).set({
+    let user=window.auth.currentUser;
+
+    // The email verification link signs the user in using the email-link provider.
+    // Link the chosen password to that same Firebase account.
+    if(!user || (user.email||'').toLowerCase()!==email.toLowerCase()){
+      throw new Error('Verification session expired. Please send the verification link again.');
+    }
+
+    const credential=firebase.auth.EmailAuthProvider.credential(email,password);
+    try{
+      await user.linkWithCredential(credential);
+    }catch(linkErr){
+      // If password provider is already linked, continue normally.
+      if(linkErr.code!=='auth/provider-already-linked' && linkErr.code!=='auth/credential-already-in-use'){
+        throw linkErr;
+      }
+    }
+
+    await user.updateProfile({displayName:username});
+    await window.db.ref('users/'+user.uid).update({
       username,
       email,
       whatsapp: country + phone,
-      provider:'password',
+      emailVerified:true,
+      provider:'password+emailLink',
       createdAt: firebase.database.ServerValue.TIMESTAMP
     });
-    await cred.user.sendEmailVerification();
-    toast('Account created! Verification email sent.');
-    setTimeout(()=>location.href='index.html',1200);
+
+    localStorage.removeItem('l2kVerifiedEmail');
+    toast('Account created successfully!');
+    setTimeout(()=>location.href='index.html',1000);
   }catch(err){
     console.error(err);
     toast(err.message || 'Could not create account');
