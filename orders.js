@@ -16,9 +16,11 @@ async function createStoreOrder(orderData){
   }catch(e){}
 
   const ref = db.ref('orders').push();
+  // Customer-facing ID: L2KTP-XXXXXX. Firebase key remains the internal record key.
+  const publicOrderId = 'L2KTP-' + String(Date.now()).slice(-6);
   const order = {
     ...orderData,
-    orderId: ref.key,
+    orderId: publicOrderId,
     customerUid: uid,
     customerEmail: email,
     customerName: orderData.customerName || displayName || '',
@@ -28,7 +30,7 @@ async function createStoreOrder(orderData){
   };
 
   await ref.set(order);
-  return { id: ref.key, ...order };
+  return { id: publicOrderId, firebaseKey: ref.key, ...order };
 }
 
 async function setOrderStatus(orderId, status){

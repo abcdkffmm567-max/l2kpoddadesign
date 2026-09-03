@@ -587,6 +587,32 @@ async function preparePaymentProof(file){
   });
 }
 
+
+function copyOrderId(orderId, btn){
+  const done=()=>{ if(btn){const old=btn.textContent;btn.textContent='✓ COPIED';setTimeout(()=>btn.textContent=old,1400)} toast('Order ID copied: '+orderId); };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(orderId).then(done).catch(()=>fallbackCopy(orderId,done));
+  }else fallbackCopy(orderId,done);
+}
+function fallbackCopy(text, done){
+  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');done()}catch(e){toast('Copy failed. Order ID: '+text,'error')}
+  ta.remove();
+}
+function showOrderSuccess(orderId){
+  const old=document.getElementById('orderSuccessOverlay'); if(old) old.remove();
+  const el=document.createElement('div');el.id='orderSuccessOverlay';
+  el.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(8,15,30,.72);display:flex;align-items:center;justify-content:center;padding:18px';
+  el.innerHTML=`<div style="width:min(430px,100%);background:#fff;border-radius:24px;padding:30px 22px;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,.3)">
+    <div style="font-size:56px">✅</div><h2 style="margin:8px 0;color:#101828">Order Placed!</h2>
+    <p style="color:#667085;margin:0 0 14px">Save your Order ID to check your order.</p>
+    <div style="background:#f1f6ff;border:1px solid #d8e6ff;border-radius:14px;padding:15px;font-size:22px;font-weight:900;color:#1765db;letter-spacing:.5px">${orderId}</div>
+    <button type="button" onclick="copyOrderId('${orderId}',this)" style="width:100%;margin-top:12px;border:0;border-radius:13px;padding:14px;background:#1677f2;color:white;font-weight:900;font-size:15px">📋 COPY ORDER ID</button>
+    <button type="button" onclick="document.getElementById('orderSuccessOverlay').remove()" style="width:100%;margin-top:8px;border:1px solid #dce3ed;border-radius:13px;padding:12px;background:#fff;color:#344054;font-weight:800">CLOSE</button>
+  </div>`;
+  document.body.appendChild(el);
+}
+
 async function checkout(){
  const playerId=document.getElementById('playerId').value.trim();
  const customerName=document.getElementById('customerName').value.trim();
@@ -628,7 +654,7 @@ async function checkout(){
      paymentProofUrl,
      paymentProofName:paymentProofFile.name||'receipt'
    });
-   toast('Order placed successfully! ID: '+created.id);
+   showOrderSuccess(created.id);
    qty={}; renderPackages(); updateCheckout();
    document.getElementById('paymentMethod').value='';
    document.getElementById('paymentProof').value='';

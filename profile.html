@@ -493,7 +493,7 @@ function loadOrders(){
     if(!orders.length){box.innerHTML='<div class="empty">You have not placed any orders yet.</div>';return}
     box.innerHTML=`<table class="table"><tr><th>Order</th><th>Game</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr>
       ${orders.map(o=>`<tr>
-        <td>${o.id.slice(-8)}</td>
+        <td><b>${o.orderId||('L2KTP-'+o.id.slice(-6))}</b></td>
         <td>${o.game||'-'}<br><small>UID: ${o.playerId||'-'}</small></td>
         <td>${formatItems(o)}</td>
         <td>${o.total==null?'-':'LKR '+Number(o.total).toLocaleString('en-LK')}</td>

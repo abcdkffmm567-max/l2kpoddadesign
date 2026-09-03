@@ -1,4 +1,4 @@
-const CACHE_NAME = "l2k-topup-pwa-v3";
+const CACHE_NAME = "l2k-topup-pwa-v4-orderid";
 const CORE = [
   "./",
   "./index.html",
