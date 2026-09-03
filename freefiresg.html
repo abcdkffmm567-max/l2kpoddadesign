@@ -238,6 +238,82 @@ body{touch-action:pan-y}
   .countdown b{font-size:14px!important}
 }
 
+
+/* UID verification success modal */
+.uid-verify-modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(5,10,20,.58);
+  backdrop-filter:blur(5px);
+  z-index:9999;
+}
+.uid-verify-modal.open{display:flex}
+.uid-verify-card{
+  width:min(520px,100%);
+  background:#fff;
+  border-radius:18px;
+  padding:34px 24px 26px;
+  text-align:center;
+  box-shadow:0 25px 70px rgba(0,0,0,.30);
+  border:1px solid #edf1f5;
+  animation:uidPop .28s cubic-bezier(.22,1,.36,1) both;
+}
+.uid-check{
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  margin:0 auto 20px;
+  display:grid;
+  place-items:center;
+  border:5px solid #dff5d8;
+  color:#70cf58;
+  font-size:48px;
+  font-weight:900;
+}
+.uid-verify-card h2{
+  font-family:Poppins,Inter,sans-serif;
+  font-size:30px;
+  color:#30343b;
+  margin-bottom:16px;
+}
+.uid-player-label{
+  font-size:10px;
+  color:#8b95a4;
+  margin-bottom:5px;
+}
+.uid-player-id{
+  font-size:22px;
+  font-weight:800;
+  color:#394150;
+  letter-spacing:.5px;
+}
+.uid-ok-btn{
+  margin-top:22px;
+  border:0;
+  border-radius:10px;
+  min-width:150px;
+  min-height:44px;
+  padding:10px 18px;
+  background:linear-gradient(90deg,#2874ef,#0db5d6);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+@keyframes uidPop{
+  from{opacity:0;transform:scale(.92) translateY(12px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@media(max-width:560px){
+  .uid-verify-card{padding:28px 18px 22px;border-radius:16px}
+  .uid-check{width:82px;height:82px;font-size:42px}
+  .uid-verify-card h2{font-size:25px}
+  .uid-player-id{font-size:20px}
+}
+
 </style>
 <script src="orders.js"></script>
 </head>
@@ -283,6 +359,17 @@ body{touch-action:pan-y}
 <div id="checkout" class="checkout"><div class="checkout-box"><div><b id="totalItems">0 items</b><br><small id="totalPrice">Rs. 0.00</small></div><button onclick="checkout()">CONTINUE →</button></div></div>
 
 <footer class="footer"><div class="container"><div class="footer-grid"><div><h4>About Us</h4><p>Fast and trusted Free Fire top-ups for Sri Lankan gamers.</p></div><div><h4>Quick Links</h4><div class="footer-links"><a href="index.html">Home</a><a href="topup.html">Game TopUp</a><a href="terms.html">Terms</a></div></div><div><h4>Contact Us</h4><div class="footer-links"><a href="contact.html">WhatsApp Support</a><a href="mailto:info@l2ktopup.store">info@l2ktopup.store</a></div></div></div><div class="footer-bottom">© 2026 L2K TOP UP STORE. All rights reserved.</div></div></footer>
+
+<div id="uidVerifyModal" class="uid-verify-modal" aria-hidden="true">
+  <div class="uid-verify-card" role="dialog" aria-modal="true" aria-labelledby="uidVerifiedTitle">
+    <div class="uid-check">✓</div>
+    <h2 id="uidVerifiedTitle">Account Verified!</h2>
+    <div class="uid-player-label">PLAYER ID</div>
+    <div id="verifiedPlayerId" class="uid-player-id">—</div>
+    <div id="uidAutoCloseText" style="margin-top:14px;font-size:10px;color:#8b95a4">Closing in 3 seconds...</div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <script>
@@ -315,7 +402,50 @@ const defaultPackages=[
 let packages=[...defaultPackages], qty={}, verified=false, heroUrl='';
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
-function verifyId(){const v=document.getElementById('playerId').value.trim();if(!v){toast('Enter Player ID first');return}verified=true;toast('Player ID verified for order flow')}
+let uidAutoCloseTimer=null;
+function verifyId(){
+  const v=document.getElementById('playerId').value.trim();
+  if(!v){
+    toast('Enter Player ID first');
+    return;
+  }
+
+  verified=true;
+  document.getElementById('verifiedPlayerId').textContent=v;
+  const modal=document.getElementById('uidVerifyModal');
+  const autoText=document.getElementById('uidAutoCloseText');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+
+  if(uidAutoCloseTimer) clearInterval(uidAutoCloseTimer);
+  let remaining=3;
+  if(autoText) autoText.textContent=`Closing in ${remaining} seconds...`;
+
+  uidAutoCloseTimer=setInterval(()=>{
+    remaining--;
+    if(remaining<=0){
+      clearInterval(uidAutoCloseTimer);
+      uidAutoCloseTimer=null;
+      closeUidVerifyModal();
+      return;
+    }
+    if(autoText) autoText.textContent=`Closing in ${remaining} second${remaining===1?'':'s'}...`;
+  },1000);
+}
+
+function closeUidVerifyModal(){
+  if(uidAutoCloseTimer){
+    clearInterval(uidAutoCloseTimer);
+    uidAutoCloseTimer=null;
+  }
+  const modal=document.getElementById('uidVerifyModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+}
+
+document.getElementById('uidVerifyModal')?.addEventListener('click',e=>{
+  if(e.target.id==='uidVerifyModal') closeUidVerifyModal();
+});verified=true;toast('Player ID verified for order flow')}
 function money(n){return 'Rs. '+Number(n||0).toLocaleString('en-LK')+'.00'}
 
 function renderPackages(){
