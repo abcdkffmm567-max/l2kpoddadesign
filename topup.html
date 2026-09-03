@@ -170,7 +170,7 @@ img{display:block;max-width:100%}
   <section class="container app-box">
     <h2>Download Our App</h2>
     <p>Get exclusive deals and faster checkout.</p>
-    <button class="download-btn" onclick="alert('Add your APK or Play Store link here')">▶ Download App</button>
+    <a id="apkDownloadBtn" class="download-btn" href="#" role="button">⬇ Download APK</a>
   </section>
 </main>
 
@@ -249,6 +249,48 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.warn('Service worker registration failed:', err));
   });
 }
+</script>
+
+
+<script>
+(function(){
+  const btn=document.getElementById('apkDownloadBtn');
+  if(!btn)return;
+
+  function showMsg(msg){
+    if(typeof toast==='function') toast(msg);
+    else alert(msg);
+  }
+
+  if(typeof db==='undefined'){
+    btn.addEventListener('click',e=>{
+      e.preventDefault();
+      showMsg('APK download link is not configured yet.');
+    });
+    return;
+  }
+
+  db.ref('site/app/apkUrl').on('value',snap=>{
+    const url=(snap.val()||'').trim();
+
+    if(url){
+      btn.href=url;
+      btn.setAttribute('download','');
+      btn.removeAttribute('aria-disabled');
+      btn.textContent='⬇ Download APK';
+      btn.onclick=null;
+    }else{
+      btn.href='#';
+      btn.removeAttribute('download');
+      btn.setAttribute('aria-disabled','true');
+      btn.textContent='⬇ Download APK';
+      btn.onclick=function(e){
+        e.preventDefault();
+        showMsg('APK download is not available yet.');
+      };
+    }
+  });
+})();
 </script>
 
 </body>

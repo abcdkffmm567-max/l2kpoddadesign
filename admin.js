@@ -440,3 +440,36 @@ async function saveBonusOfferSettings(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>setTimeout(loadBonusOfferSettings,250));
+
+
+function loadApkDownloadUrl(){
+  if(typeof db==='undefined')return;
+  db.ref('site/app/apkUrl').once('value').then(s=>{
+    const el=document.getElementById('apkDownloadUrl');
+    if(el)el.value=s.val()||'';
+  }).catch(console.error);
+}
+
+async function saveApkDownloadUrl(){
+  if(typeof db==='undefined'){
+    toast('Firebase not loaded','error');
+    return;
+  }
+
+  const url=(document.getElementById('apkDownloadUrl')?.value||'').trim();
+
+  if(url && !/^https?:\/\//i.test(url)){
+    toast('Enter a valid direct HTTPS APK URL','error');
+    return;
+  }
+
+  try{
+    await db.ref('site/app/apkUrl').set(url||null);
+    toast(url?'APK download URL saved':'APK download URL removed');
+  }catch(err){
+    console.error(err);
+    toast(err.message||'Could not save APK URL','error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(loadApkDownloadUrl,280));
