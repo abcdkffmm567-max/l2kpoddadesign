@@ -258,6 +258,7 @@ function renderOrders(){
       <th>Game / Player ID</th>
       <th>Items</th>
       <th>Total</th>
+      <th>Payment</th>
       <th>Status</th>
       <th>Actions</th>
     </tr>
@@ -268,6 +269,12 @@ function renderOrders(){
         <td>${o.game||'-'}<br><small>UID: ${o.playerId||'-'}</small></td>
         <td>${formatOrderItems(o)}</td>
         <td>${o.total==null?'-':'LKR '+Number(o.total).toLocaleString('en-LK')}</td>
+        <td>
+          <b>${o.paymentMethod||'-'}</b><br>
+          ${o.paymentProofUrl
+            ? `<a href="${o.paymentProofUrl}" target="_blank" rel="noopener" style="display:inline-flex;margin-top:5px;align-items:center;gap:5px;color:#1765db;font-weight:800">🧾 View Receipt</a><br><img src="${o.paymentProofUrl}" alt="Payment proof" style="margin-top:6px;width:74px;height:74px;object-fit:cover;border-radius:8px;border:1px solid #dde4ee">`
+            : '<small>No receipt</small>'}
+        </td>
         <td>${orderStatusBadge(o.status||'pending')}</td>
         <td style="min-width:210px">
           <button class="small-btn" onclick="changeOrderStatus('${o.id}','active')">Activate</button>

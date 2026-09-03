@@ -314,6 +314,13 @@ body{touch-action:pan-y}
   .uid-player-id{font-size:20px}
 }
 
+
+@media(max-width:560px){
+ #paymentProofSection>div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+ #paymentProofSection select,#paymentProofSection input{font-size:16px!important}
+ #paymentProofPreview{width:100%!important;max-height:260px!important}
+}
+
 </style>
 <script src="orders.js"></script>
 </head>
@@ -352,13 +359,38 @@ body{touch-action:pan-y}
     <div id="packageGrid" class="package-grid"></div>
   </section>
 
-  <section class="panel bottom-panel"><div class="how"><div><b style="font-size:11px">❓ How It Works</b><div style="font-size:8px;color:#8490a2;margin-top:3px">Simple 5-step process</div></div><span>⌄</span></div></section>
+  
+<section class="panel bottom-panel" id="paymentProofSection">
+  <div class="panel-title"><span class="step">3</span> Payment & Receipt</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div>
+      <label style="display:block;font-size:9px;font-weight:800;color:#59667a;margin-bottom:6px">Payment Method</label>
+      <select id="paymentMethod" style="width:100%;height:44px;border:1px solid #dfe5ed;border-radius:9px;padding:0 11px;background:#fff;font-size:11px">
+        <option value="">Select payment method</option>
+        <option value="eZ Cash">eZ Cash</option>
+        <option value="Bank of Ceylon">Bank of Ceylon (BOC)</option>
+        <option value="Sampath Bank">Sampath Bank</option>
+      </select>
+    </div>
+    <div>
+      <label style="display:block;font-size:9px;font-weight:800;color:#59667a;margin-bottom:6px">Payment Receipt</label>
+      <input id="paymentProof" type="file" accept="image/*" style="width:100%;min-height:44px;border:1px solid #dfe5ed;border-radius:9px;padding:8px;background:#fff;font-size:10px">
+    </div>
+  </div>
+  <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <small style="font-size:8px;color:#7b8797">Upload a clear JPG/PNG/WebP screenshot or photo of your payment.</small>
+    <a href="payment.html" style="font-size:9px;font-weight:900;color:#1765db">VIEW PAYMENT DETAILS →</a>
+  </div>
+  <img id="paymentProofPreview" alt="Payment proof preview" style="display:none;margin-top:12px;width:150px;max-height:180px;object-fit:cover;border-radius:10px;border:1px solid #e1e6ed">
+</section>
+
+<section class="panel bottom-panel"><div class="how"><div><b style="font-size:11px">❓ How It Works</b><div style="font-size:8px;color:#8490a2;margin-top:3px">Simple 5-step process</div></div><span>⌄</span></div></section>
   <section class="panel secure"><div class="secure-badge">🛡 100% Secure Payments</div><p style="font-size:8px;color:#7b8797;margin-top:13px">We accept a wide range of secure payment methods:</p><div class="payments"><span>VISA</span><span>Mastercard</span><span>Bank</span><span>Binance</span><span>eZ Cash</span><span>mCash</span></div></section>
 </main>
 
 <div id="checkout" class="checkout"><div class="checkout-box"><div><b id="totalItems">0 items</b><br><small id="totalPrice">Rs. 0.00</small></div><button onclick="checkout()">CONTINUE →</button></div></div>
 
-<footer class="footer"><div class="container"><div class="footer-grid"><div><h4>About Us</h4><p>Fast and trusted Free Fire top-ups for Sri Lankan gamers.</p></div><div><h4>Quick Links</h4><div class="footer-links"><a href="index.html">Home</a><a href="topup.html">Game TopUp</a><a href="terms.html">Terms</a></div></div><div><h4>Contact Us</h4><div class="footer-links"><a href="contact.html">WhatsApp Support</a><a href="mailto:info@l2ktopup.store">info@l2ktopup.store</a></div></div></div><div class="footer-bottom">© 2026 L2K TOP UP STORE. All rights reserved.</div></div></footer>
+<footer class="footer"><div class="container"><div class="footer-grid"><div><h4>About Us</h4><p>Fast and trusted Free Fire top-ups for Sri Lankan gamers.</p></div><div><h4>Quick Links</h4><div class="footer-links"><a href="index.html">Home</a><a href="topup.html">Game TopUp</a><a href="payment.html">Payment Details</a><a href="terms.html">Terms</a></div></div><div><h4>Contact Us</h4><div class="footer-links"><a href="contact.html">WhatsApp Support</a><a href="mailto:info@l2ktopup.store">info@l2ktopup.store</a></div></div></div><div class="footer-bottom">© 2026 L2K TOP UP STORE. All rights reserved.</div></div></footer>
 
 <div id="uidVerifyModal" class="uid-verify-modal" aria-hidden="true">
   <div class="uid-verify-card" role="dialog" aria-modal="true" aria-labelledby="uidVerifiedTitle">
@@ -471,13 +503,39 @@ function updateCheckout(){
  document.getElementById('totalPrice').textContent=money(total);
  document.getElementById('checkout').classList.toggle('show',items>0)
 }
+
+document.getElementById('paymentProof')?.addEventListener('change',e=>{
+  const file=e.target.files?.[0];
+  const preview=document.getElementById('paymentProofPreview');
+  if(!file){preview.style.display='none';preview.removeAttribute('src');return}
+  if(!file.type.startsWith('image/')){toast('Please select an image receipt');e.target.value='';return}
+  if(file.size>5*1024*1024){toast('Payment receipt must be under 5MB');e.target.value='';return}
+  preview.src=URL.createObjectURL(file);
+  preview.style.display='block';
+});
+
+async function uploadPaymentProof(file){
+  if(!window.storage) throw new Error('Firebase Storage is not enabled.');
+  const user=window.auth?.currentUser||null;
+  const owner=user?.uid||('guest_'+Date.now());
+  const safe=(file.name||'receipt.jpg').replace(/[^a-zA-Z0-9._-]/g,'_');
+  const ref=window.storage.ref(`payment-proofs/${owner}/${Date.now()}_${safe}`);
+  const snap=await ref.put(file);
+  return await snap.ref.getDownloadURL();
+}
+
 async function checkout(){
  const playerId=document.getElementById('playerId').value.trim();
  const customerName=document.getElementById('customerName').value.trim();
  const whatsapp=document.getElementById('customerWhatsApp').value.trim();
+ const paymentMethod=document.getElementById('paymentMethod').value;
+ const paymentProofFile=document.getElementById('paymentProof').files?.[0];
  if(!playerId){toast('Enter your Player ID first');return}
  if(!customerName){toast('Enter your name');return}
  if(!whatsapp){toast('Enter your WhatsApp number');return}
+ if(!paymentMethod){toast('Select your payment method');return}
+ if(!paymentProofFile){toast('Upload your payment receipt');return}
+ if(paymentProofFile.size>5*1024*1024){toast('Payment receipt must be under 5MB');return}
 
  const selected=packages.filter(p=>(qty[p.id]||0)>0);
  if(!selected.length){toast('Select at least one package');return}
@@ -492,6 +550,8 @@ async function checkout(){
  const total=orderItems.reduce((s,i)=>s+i.subtotal,0);
 
  try{
+   toast('Uploading payment receipt...');
+   const paymentProofUrl=await uploadPaymentProof(paymentProofFile);
    const created=await createStoreOrder({
      type:'freefire-sg',
      game:'Free Fire (SG/MY)',
@@ -500,10 +560,16 @@ async function checkout(){
      whatsapp,
      items:orderItems,
      total,
-     currency:'LKR'
+     currency:'LKR',
+     paymentMethod,
+     paymentProofUrl,
+     paymentProofName:paymentProofFile.name||'receipt'
    });
    toast('Order placed successfully! ID: '+created.id);
    qty={}; renderPackages(); updateCheckout();
+   document.getElementById('paymentMethod').value='';
+   document.getElementById('paymentProof').value='';
+   document.getElementById('paymentProofPreview').style.display='none';
  }catch(err){
    console.error(err);
    toast(err.message||'Could not place order');
