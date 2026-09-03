@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Free Fire SG/MY Top-Up — L2K TOP UP STORE</title>
 <link rel="icon" href="logo.svg">
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -12,7 +12,7 @@
 <script src="firebase.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;max-width:100%;overflow-x:hidden;touch-action:pan-y}img{max-width:100%}
+*{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#111827}
 a{text-decoration:none;color:inherit}
 .container{width:min(980px,calc(100% - 24px));margin:auto}
@@ -74,15 +74,172 @@ a{text-decoration:none;color:inherit}
   .checkout button{padding:10px 12px}
 }
 
+
+/* ===== Free Fire SG mobile layout hardening ===== */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{touch-action:pan-y}
+@media(max-width:560px){
+  *{min-width:0}
+  .container{
+    width:calc(100% - 16px)!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  .topbar{height:56px!important}
+  .nav{gap:8px!important}
+  .brand{font-size:12px!important;min-width:0!important}
+  .menu{flex:0 0 40px!important}
+
+  .hero{
+    width:100%!important;
+    min-height:240px!important;
+    margin-top:10px!important;
+    border-radius:16px!important;
+    background-position:center!important;
+  }
+  .hero-content{padding:26px 14px!important}
+  .hero h1{
+    font-size:28px!important;
+    line-height:1.12!important;
+    letter-spacing:-.5px!important;
+    overflow-wrap:anywhere;
+  }
+  .hero p{font-size:10px!important}
+
+  .main-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    width:100%!important;
+    margin:10px 0!important;
+  }
+  .panel{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:14px!important;
+    overflow:hidden!important;
+  }
+  .panel-title{font-size:12px!important}
+  .uid-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  .uid-row input,
+  .uid-row button{
+    width:100%!important;
+    max-width:100%!important;
+  }
+  .uid-row input{font-size:16px!important}
+  .uid-row button{height:44px!important}
+
+  /* Name + WhatsApp row */
+  .main-grid .panel > div[style*="grid-template-columns:1fr 1fr"]{
+    grid-template-columns:1fr!important;
+    width:100%!important;
+  }
+  .main-grid .panel > div[style*="grid-template-columns:1fr 1fr"] input{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    font-size:16px!important;
+  }
+
+  /* Bonus timer - keep centered and inside screen */
+  .offer{
+    text-align:center!important;
+    width:100%!important;
+  }
+  .countdown{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:6px!important;
+    width:100%!important;
+  }
+  .countdown div{
+    min-width:0!important;
+    padding:10px 2px!important;
+    border-radius:10px!important;
+  }
+  .countdown b{font-size:15px!important}
+  .countdown small{font-size:6.5px!important}
+
+  .packages-panel{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+  .packages-head{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:10px!important;
+  }
+  .currency{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+  }
+  .currency button{width:100%!important}
+
+  .package-grid{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+  .package-card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding:8px!important;
+    min-height:178px!important;
+    overflow:hidden!important;
+  }
+  .package-card img{
+    width:100%!important;
+    height:66px!important;
+    object-fit:contain!important;
+  }
+  .package-card h3{
+    font-size:8.5px!important;
+    line-height:1.35!important;
+    overflow-wrap:anywhere!important;
+  }
+  .price{font-size:10px!important}
+  .qty{gap:5px!important}
+  .qty button{width:28px!important;height:28px!important;flex:0 0 28px!important}
+  .qty span{min-width:18px;text-align:center}
+  .discount{
+    right:5px!important;
+    top:5px!important;
+    font-size:6px!important;
+    padding:3px 5px!important;
+  }
+
+  .secure{padding:18px 10px!important}
+  .payments{gap:6px!important}
+  .payments span{padding:6px 8px!important;font-size:8px!important}
+
+  .checkout{
+    left:0!important;
+    right:0!important;
+    width:calc(100% - 16px)!important;
+    bottom:6px!important;
+  }
+  .checkout-box{width:100%!important}
+}
+@media(max-width:380px){
+  .hero h1{font-size:25px!important}
+  .package-grid{gap:6px!important}
+  .package-card{padding:7px!important}
+  .countdown{gap:4px!important}
+  .countdown b{font-size:14px!important}
+}
+
 </style>
 <script src="orders.js"></script>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#087cf7">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="L2K TOPUP">
-<link rel="apple-touch-icon" href="./icon-192.png">
 </head>
 <body>
 <header class="topbar"><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">L2K</span>L2K TOP UP STORE</a><button class="menu" onclick="location.href='topup.html'">☰</button></div></header>
@@ -295,16 +452,5 @@ function loadFirebase(){
 loadFirebase();
 </script>
 <script src="animations.js"></script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('L2K PWA service worker registered'))
-      .catch(err => console.warn('Service worker registration failed:', err));
-  });
-}
-</script>
-
 </body>
 </html>
