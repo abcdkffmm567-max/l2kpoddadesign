@@ -445,7 +445,7 @@ function closeUidVerifyModal(){
 
 document.getElementById('uidVerifyModal')?.addEventListener('click',e=>{
   if(e.target.id==='uidVerifyModal') closeUidVerifyModal();
-});verified=true;toast('Player ID verified for order flow')}
+});
 function money(n){return 'Rs. '+Number(n||0).toLocaleString('en-LK')+'.00'}
 
 function renderPackages(){
@@ -567,17 +567,31 @@ function renderBonusOffer(config){
 }
 
 function loadFirebase(){
- if(typeof db==='undefined'){renderPackages();return}
- db.ref('site/freefiresg').on('value',snap=>{
-   const v=snap.val()||{};
-   heroUrl=v.heroImageUrl||'';
-   const hero=document.getElementById('ffHero');
-   if(heroUrl)hero.style.backgroundImage=`linear-gradient(180deg,rgba(5,10,20,.15),rgba(5,8,18,.76)),url("${heroUrl}")`;
-   const saved=v.packages||{};
-   packages=defaultPackages.map(p=>({...p,...(saved[p.id]||{})}));
-   renderPackages();
-   renderBonusOffer(v.bonusOffer||{});
- });
+  // Always show default packages immediately.
+  renderPackages();
+
+  if(typeof db==='undefined'){
+    console.warn('Firebase database not loaded; using default packages.');
+    return;
+  }
+
+  db.ref('site/freefiresg').on('value',snap=>{
+    const v=snap.val()||{};
+    heroUrl=v.heroImageUrl||'';
+    const hero=document.getElementById('ffHero');
+
+    if(heroUrl){
+      hero.style.backgroundImage=`linear-gradient(180deg,rgba(5,10,20,.15),rgba(5,8,18,.76)),url("${heroUrl}")`;
+    }
+
+    const saved=v.packages||{};
+    packages=defaultPackages.map(p=>({...p,...(saved[p.id]||{})}));
+    renderPackages();
+    renderBonusOffer(v.bonusOffer||{});
+  },err=>{
+    console.error('Free Fire data load failed:',err);
+    renderPackages();
+  });
 }
 loadFirebase();
 </script>
