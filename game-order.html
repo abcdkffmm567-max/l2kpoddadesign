@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Game Order — L2K TOP UP STORE</title><link rel="stylesheet" href="style.css"><script src="orders.js"></script>
+<title>Game Order — L2K TOP UP STORE</title><link rel="stylesheet" href="style.css">
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
@@ -27,7 +27,23 @@
 </div></div></div></section>
 <script>
 const game=new URLSearchParams(location.search).get('game')||localStorage.getItem('selectedGame')||'Game';
-document.getElementById('game').value=game;document.getElementById('title').innerHTML='Top Up <span>'+game+'</span>';\nfunction showGameOrderSuccess(id){\n const box=document.createElement('div');box.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';\n box.innerHTML=`<div style="background:white;border-radius:20px;padding:26px;text-align:center;max-width:390px;width:100%"><div style="font-size:52px">✅</div><h2>Order Placed!</h2><div style="padding:14px;background:#eef5ff;border-radius:12px;font-size:21px;font-weight:900;color:#1765db">${id}</div><button id="copyNewOrder" style="margin-top:12px;width:100%;padding:13px;border:0;border-radius:12px;background:#1677f2;color:white;font-weight:900">📋 COPY ORDER ID</button><button onclick="this.closest('div[style*=fixed]').remove()" style="margin-top:8px;width:100%;padding:11px;border:1px solid #ddd;border-radius:12px;background:white">CLOSE</button></div>`;\n document.body.appendChild(box);\n box.querySelector('#copyNewOrder').onclick=async function(){try{await navigator.clipboard.writeText(id);this.textContent='✓ COPIED'}catch(e){prompt('Copy Order ID:',id)}};\n}\n
+document.getElementById('game').value=game;
+document.getElementById('title').innerHTML='Top Up <span>'+game+'</span>';
+
+function showGameOrderSuccess(orderId){
+  const old=document.getElementById('gameOrderSuccess'); if(old) old.remove();
+  const box=document.createElement('div');
+  box.id='gameOrderSuccess';
+  box.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
+  box.innerHTML=`<div style="background:white;border-radius:20px;padding:26px;text-align:center;max-width:390px;width:100%"><div style="font-size:52px">✅</div><h2>Order Placed!</h2><p style="color:#667085">Your Order ID</p><div style="padding:14px;background:#eef5ff;border-radius:12px;font-size:21px;font-weight:900;color:#1765db;word-break:break-all">${orderId}</div><button id="copyNewOrder" style="margin-top:12px;width:100%;padding:13px;border:0;border-radius:12px;background:#1677f2;color:white;font-weight:900">📋 COPY ORDER ID</button><button id="closeNewOrder" style="margin-top:8px;width:100%;padding:11px;border:1px solid #ddd;border-radius:12px;background:white">CLOSE</button></div>`;
+  document.body.appendChild(box);
+  box.querySelector('#copyNewOrder').onclick=async function(){
+    try{ await copyTextToClipboard(orderId); this.textContent='✓ COPIED'; setTimeout(()=>this.textContent='📋 COPY ORDER ID',1500); }
+    catch(e){ window.prompt('Copy your Order ID:',orderId); }
+  };
+  box.querySelector('#closeNewOrder').onclick=()=>box.remove();
+}
+
 async function sendOrder(){
  const uid=document.getElementById('uid').value.trim();
  const name=document.getElementById('name').value.trim();
@@ -46,7 +62,7 @@ async function sendOrder(){
      total:null,
      currency:'LKR'
    });
-   showGameOrderSuccess(created.id);
+   showGameOrderSuccess(created.orderId);
  }catch(err){
    console.error(err);
    alert(err.message||'Could not place order');

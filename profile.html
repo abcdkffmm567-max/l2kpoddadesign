@@ -481,6 +481,10 @@ function renderProfile(){
     fallback.style.display='grid';
   }
 }
+function copyProfileOrderId(id,btn){
+  copyTextToClipboard(id).then(()=>{const old=btn.textContent;btn.textContent='✓ COPIED';setTimeout(()=>btn.textContent=old,1300);}).catch(()=>window.prompt('Copy Order ID:',id));
+}
+
 function loadOrders(){
   window.db.ref('orders').orderByChild('customerUid').equalTo(currentUser.uid).on('value',snap=>{
     const raw=snap.val()||{};
@@ -493,7 +497,7 @@ function loadOrders(){
     if(!orders.length){box.innerHTML='<div class="empty">You have not placed any orders yet.</div>';return}
     box.innerHTML=`<table class="table"><tr><th>Order</th><th>Game</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr>
       ${orders.map(o=>`<tr>
-        <td><b>${o.orderId||('L2KTP-'+o.id.slice(-6))}</b></td>
+        <td><b>${o.orderId||('L2KTP-'+o.id.slice(-6).toUpperCase())}</b><br><button type="button" onclick="copyProfileOrderId('${o.orderId||('L2KTP-'+o.id.slice(-6).toUpperCase())}',this)" style="margin-top:5px;border:0;background:#1677f2;color:#fff;border-radius:7px;padding:5px 8px;font-size:11px;font-weight:800">📋 COPY</button></td>
         <td>${o.game||'-'}<br><small>UID: ${o.playerId||'-'}</small></td>
         <td>${formatItems(o)}</td>
         <td>${o.total==null?'-':'LKR '+Number(o.total).toLocaleString('en-LK')}</td>

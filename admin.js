@@ -264,7 +264,7 @@ function renderOrders(){
     </tr>
     ${list.map(o=>`
       <tr>
-        <td><b>${o.orderId||('L2KTP-'+o.id.slice(-6))}</b><br><small>${o.createdAt?new Date(o.createdAt).toLocaleString():'-'}</small></td>
+        <td><b>${o.orderId||('L2KTP-'+o.id.slice(-6).toUpperCase())}</b><br><small>${o.createdAt?new Date(o.createdAt).toLocaleString():'-'}</small></td>
         <td>${o.customerName||'-'}<br><small>${o.whatsapp||o.customerEmail||'-'}</small></td>
         <td>${o.game||'-'}<br><small>UID: ${o.playerId||'-'}</small></td>
         <td>${formatOrderItems(o)}</td>

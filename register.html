@@ -370,9 +370,9 @@ a{text-decoration:none;color:inherit}
           <label>✉ Email Address</label>
           <div class="email-row">
             <input class="input" type="email" name="email" required placeholder="Enter your email">
-            <button id="sendVerifyBtn" class="code-btn" type="button" onclick="prepareEmailVerification()">➤ Verify Email</button>
+            <button id="sendVerifyBtn" class="code-btn" type="button" onclick="sendVerificationLink()">➤ Send Link</button>
           </div>
-          <div id="emailVerifyStatus" class="email-verify-status">Create your account, then Firebase will send an email verification link.</div>
+          <div id="emailVerifyStatus" class="email-verify-status">Verify your email before creating the account.</div>
         </div>
 
         <div class="field">
@@ -448,13 +448,110 @@ function setEmailStatus(message, ok=false){
   el.className='email-verify-status'+(ok?' ok':'');
 }
 
-function prepareEmailVerification(){
+async function sendVerificationLink(){
   const email=document.querySelector('[name=email]').value.trim();
-  if(!email){toast('Enter your email address first');return;}
-  setEmailStatus('After you tap CREATE ACCOUNT, a verification link will be sent to '+email+'.', true);
-  toast('Email ready. Complete the form and tap CREATE ACCOUNT');
+  if(!email){toast('Enter your email address first');return}
+
+  try{
+    if(!window.auth) throw new Error('Firebase Authentication is not loaded.');
+
+    const btn=document.getElementById('sendVerifyBtn');
+    btn.disabled=true;
+    btn.textContent='Sending...';
+
+    // The link returns to this same register page.
+    const actionCodeSettings={
+      url: location.origin + location.pathname,
+      handleCodeInApp: true
+    };
+
+    await window.auth.sendSignInLinkToEmail(email, actionCodeSettings);
+    localStorage.setItem('l2kEmailForSignIn', email);
+    localStorage.removeItem('l2kVerifiedEmail');
+
+    setEmailStatus('Verification link sent. Open the link from your email to verify.');
+    toast('Verification link sent to your email');
+
+    btn.textContent='✓ Link Sent';
+    setTimeout(()=>{
+      btn.disabled=false;
+      btn.textContent='↻ Resend Link';
+    },4000);
+  }catch(err){
+    console.error(err);
+    const btn=document.getElementById('sendVerifyBtn');
+    btn.disabled=false;
+    btn.textContent='➤ Send Link';
+    setEmailStatus(err.message || 'Could not send verification link.');
+    toast(err.message || 'Could not send verification link');
+  }
 }
 
+async function completeEmailLinkVerification(){
+  try{
+    if(!window.auth || !window.auth.isSignInWithEmailLink(location.href)) return;
+
+    let email=localStorage.getItem('l2kEmailForSignIn') || '';
+    if(!email){
+      email=prompt('Enter the email address you used for verification:') || '';
+    }
+    email=email.trim();
+    if(!email) return;
+
+    const result=await window.auth.signInWithEmailLink(email, location.href);
+    localStorage.setItem('l2kVerifiedEmail', email.toLowerCase());
+    localStorage.removeItem('l2kEmailForSignIn');
+
+    const input=document.querySelector('[name=email]');
+    input.value=email;
+    input.readOnly=true;
+
+    const btn=document.getElementById('sendVerifyBtn');
+    btn.textContent='✓ Verified';
+    btn.disabled=true;
+    btn.classList.add('verified');
+
+    setEmailStatus('Email verified successfully.', true);
+    toast('Email verified successfully');
+
+    // Remove the one-time link query string from the address bar.
+    history.replaceState({}, document.title, location.origin + location.pathname);
+  }catch(err){
+    console.error(err);
+    setEmailStatus(err.message || 'Email verification failed.');
+    toast(err.message || 'Email verification failed');
+  }
+}
+
+window.addEventListener('load',()=>{
+  setTimeout(completeEmailLinkVerification,350);
+
+  const emailInput=document.querySelector('[name=email]');
+  emailInput.addEventListener('input',()=>{
+    const verified=(localStorage.getItem('l2kVerifiedEmail')||'').toLowerCase();
+    if(emailInput.value.trim().toLowerCase()!==verified){
+      setEmailStatus('Verify your email before creating the account.');
+      const btn=document.getElementById('sendVerifyBtn');
+      if(!btn.disabled){
+        btn.textContent='➤ Send Link';
+        btn.classList.remove('verified');
+      }
+    }
+  });
+});
+function togglePassword(){
+  const p=document.getElementById('password');
+  p.type=p.type==='password'?'text':'password';
+}
+document.getElementById('password').addEventListener('input',e=>{
+  const v=e.target.value;
+  let score=0;
+  if(v.length>=6) score++;
+  if(/[A-Z]/.test(v)) score++;
+  if(/[0-9]/.test(v)) score++;
+  if(/[^A-Za-z0-9]/.test(v)) score++;
+  document.getElementById('strengthBar').style.width=(score*25)+'%';
+});
 document.getElementById('registerForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const form=e.currentTarget;

@@ -107,12 +107,7 @@ document.getElementById('loginForm').addEventListener('submit',async e=>{
   const password=document.getElementById('loginPassword').value;
   try{
     await window.auth.setPersistence(document.getElementById('remember').checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION);
-    const cred=await window.auth.signInWithEmailAndPassword(email,password);
-    if(!cred.user.emailVerified){
-      await cred.user.sendEmailVerification().catch(()=>{});
-      await window.auth.signOut();
-      throw new Error('Please verify your email first. We sent you a new verification link.');
-    }
+    await window.auth.signInWithEmailAndPassword(email,password);
     toast('Login successful');
     setTimeout(()=>location.href='index.html',800);
   }catch(err){console.error(err);toast(err.message||'Login failed')}
