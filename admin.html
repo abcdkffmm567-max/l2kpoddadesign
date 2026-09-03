@@ -5,13 +5,6 @@
 <script src="firebase.js"></script>
 <script src="orders.js"></script>
 <script src="reviews.js"></script>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#087cf7">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="L2K TOPUP">
-<link rel="apple-touch-icon" href="./icon-192.png">
 </head><body>
 <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><span class="logo-mark">L2K</span><span class="logo-text"><strong>L2K</strong><small>TOP UP STORE • ADMIN</small></span></a><a class="btn btn-light" href="index.html">VIEW STORE →</a></div></header>
 <main class="admin-shell"><div class="container"><div id="login" class="order-box" style="max-width:430px"><h2 style="font-family:Poppins;margin-bottom:14px">Admin Login</h2><div class="notice">Admin login required. Please enter your administrator credentials.</div><div class="field"><label>Username</label><input id="au" placeholder="Enter admin username"></div><br><div class="field"><label>Password</label><input id="ap" type="password" placeholder="Enter admin password"></div><br><button class="btn btn-primary" onclick="login()">LOGIN →</button></div>
@@ -139,33 +132,36 @@
 </div>
 
 <div class="admin-card">
-  <h2>APK Download Settings</h2>
-  <div class="notice">
-    Upload your APK to GitHub Releases, Firebase Storage, or another direct-download host, then paste the APK URL here.
-  </div>
+  <h2>Popup Ad Banner Settings</h2>
+  <div class="notice">Show a promotional image automatically when customers enter the home page. Paste a public/direct HTTPS image URL.</div>
   <div class="form-grid">
-    <div class="field full">
-      <label>APK Direct Download URL</label>
-      <input id="apkDownloadUrl" placeholder="https://example.com/L2K-TOP-UP-STORE.apk">
-      <small style="font-size:8px;color:#8993a3">
-        This link is used by the “Download APK” button on topup.html.
-      </small>
+    <div class="field">
+      <label>Popup Ad</label>
+      <select id="popupAdEnabled"><option value="true">ON</option><option value="false">OFF</option></select>
+    </div>
+    <div class="field">
+      <label>“Don't show today” option</label>
+      <select id="popupAdDontShow"><option value="true">SHOW</option><option value="false">HIDE</option></select>
     </div>
     <div class="field full">
-      <button class="btn btn-primary" type="button" onclick="saveApkDownloadUrl()">SAVE APK DOWNLOAD URL</button>
+      <label>Ad Banner Image URL</label>
+      <input id="popupAdImageUrl" placeholder="https://example.com/promo-banner.jpg">
+    </div>
+    <div class="field full">
+      <label>Banner Click URL (optional)</label>
+      <input id="popupAdLinkUrl" placeholder="https://example.com/offer">
+    </div>
+    <div class="field">
+      <label>Open delay (seconds)</label>
+      <input id="popupAdDelay" type="number" min="0" max="15" step="0.5" value="0.6">
+    </div>
+    <div class="field full">
+      <img id="popupAdPreview" alt="Popup ad preview" style="display:none;width:min(320px,100%);max-height:360px;object-fit:contain;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc">
+    </div>
+    <div class="field full">
+      <button class="btn btn-primary" type="button" onclick="savePopupAdSettings()">SAVE POPUP AD</button>
     </div>
   </div>
 </div>
 </section></div></div></div></main><div class="toast"></div><script src="app.js"></script><script src="admin.js"></script><script src="animations.js"></script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('L2K PWA service worker registered'))
-      .catch(err => console.warn('Service worker registration failed:', err));
-  });
-}
-</script>
-
 </body></html>

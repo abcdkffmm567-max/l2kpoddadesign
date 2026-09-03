@@ -1072,3 +1072,32 @@ input,select,textarea,button{max-width:100%}
   }
   .admin-card img{max-width:100%!important;height:auto!important}
 }
+
+
+/* ===== Website Entry Popup Ad ===== */
+.entry-ad-overlay{
+  position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(2,7,18,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.entry-ad-overlay.show{display:flex;animation:entryAdFade .25s ease both}
+.entry-ad-card{position:relative;width:min(520px,94vw);max-height:88vh;border-radius:22px;overflow:hidden;background:#0a1220;
+  box-shadow:0 28px 80px rgba(0,0,0,.48);border:1px solid rgba(255,255,255,.12);animation:entryAdPop .35s cubic-bezier(.22,1,.36,1) both}
+.entry-ad-link{display:block;line-height:0;background:#0b1320}
+.entry-ad-image{display:block;width:100%;max-height:76vh;object-fit:contain;background:#0b1320}
+.entry-ad-close{position:absolute;right:12px;top:12px;width:44px;height:44px;border:1px solid rgba(255,255,255,.25);border-radius:50%;
+  display:grid;place-items:center;background:rgba(8,18,34,.82);color:#fff;font-size:28px;line-height:1;cursor:pointer;z-index:3;backdrop-filter:blur(8px)}
+.entry-ad-close:hover{background:#101d31}
+.entry-ad-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:rgba(7,14,27,.98);color:#fff}
+.entry-ad-check{display:flex;align-items:center;gap:8px;font-size:11px;color:#d7deea;cursor:pointer}
+.entry-ad-check input{width:18px;height:18px;accent-color:#0b8ff3}
+.entry-ad-tag{font-size:8px;font-weight:900;letter-spacing:.7px;color:#74c7ff}
+@keyframes entryAdFade{from{opacity:0}to{opacity:1}}
+@keyframes entryAdPop{from{opacity:0;transform:scale(.92) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(max-width:560px){
+  .entry-ad-overlay{padding:12px}
+  .entry-ad-card{width:100%;max-width:430px;border-radius:18px}
+  .entry-ad-image{max-height:72vh}
+  .entry-ad-close{right:9px;top:9px;width:42px;height:42px;font-size:26px}
+  .entry-ad-bottom{padding:10px 12px}
+  .entry-ad-check{font-size:10px}
+}

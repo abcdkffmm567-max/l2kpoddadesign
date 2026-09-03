@@ -442,34 +442,42 @@ async function saveBonusOfferSettings(){
 document.addEventListener('DOMContentLoaded',()=>setTimeout(loadBonusOfferSettings,250));
 
 
-function loadApkDownloadUrl(){
+function loadPopupAdSettings(){
   if(typeof db==='undefined')return;
-  db.ref('site/app/apkUrl').once('value').then(s=>{
-    const el=document.getElementById('apkDownloadUrl');
-    if(el)el.value=s.val()||'';
+  db.ref('site/popupAd').once('value').then(s=>{
+    const v=s.val()||{};
+    const enabled=document.getElementById('popupAdEnabled');
+    const dont=document.getElementById('popupAdDontShow');
+    const img=document.getElementById('popupAdImageUrl');
+    const link=document.getElementById('popupAdLinkUrl');
+    const delay=document.getElementById('popupAdDelay');
+    const preview=document.getElementById('popupAdPreview');
+    if(enabled)enabled.value=String(v.enabled===true);
+    if(dont)dont.value=String(v.allowDontShowToday!==false);
+    if(img)img.value=v.imageUrl||'';
+    if(link)link.value=v.linkUrl||'';
+    if(delay)delay.value=String((Number(v.delayMs||600)/1000));
+    if(preview&&v.imageUrl){preview.src=v.imageUrl;preview.style.display='block'}
   }).catch(console.error);
 }
 
-async function saveApkDownloadUrl(){
-  if(typeof db==='undefined'){
-    toast('Firebase not loaded','error');
-    return;
-  }
-
-  const url=(document.getElementById('apkDownloadUrl')?.value||'').trim();
-
-  if(url && !/^https?:\/\//i.test(url)){
-    toast('Enter a valid direct HTTPS APK URL','error');
-    return;
-  }
-
+async function savePopupAdSettings(){
+  if(typeof db==='undefined'){toast('Firebase not loaded','error');return}
+  const enabled=document.getElementById('popupAdEnabled')?.value==='true';
+  const allowDontShowToday=document.getElementById('popupAdDontShow')?.value==='true';
+  const imageUrl=(document.getElementById('popupAdImageUrl')?.value||'').trim();
+  const linkUrl=(document.getElementById('popupAdLinkUrl')?.value||'').trim();
+  const delaySeconds=Math.max(0,Math.min(15,Number(document.getElementById('popupAdDelay')?.value||0.6)));
+  if(enabled&&!imageUrl){toast('Add the popup banner image URL first','error');return}
+  if(imageUrl&&!/^https?:\/\//i.test(imageUrl)){toast('Enter a valid HTTPS image URL','error');return}
+  if(linkUrl&&!/^https?:\/\//i.test(linkUrl)){toast('Enter a valid banner click URL','error');return}
   try{
-    await db.ref('site/app/apkUrl').set(url||null);
-    toast(url?'APK download URL saved':'APK download URL removed');
-  }catch(err){
-    console.error(err);
-    toast(err.message||'Could not save APK URL','error');
-  }
+    await db.ref('site/popupAd').set({enabled,allowDontShowToday,imageUrl,linkUrl,delayMs:Math.round(delaySeconds*1000),updatedAt:firebase.database.ServerValue.TIMESTAMP});
+    const preview=document.getElementById('popupAdPreview');
+    if(preview&&imageUrl){preview.src=imageUrl;preview.style.display='block'}
+    else if(preview)preview.style.display='none';
+    toast(enabled?'Popup Ad is ON':'Popup Ad turned OFF');
+  }catch(err){console.error(err);toast(err.message||'Could not save popup ad','error')}
 }
 
-document.addEventListener('DOMContentLoaded',()=>setTimeout(loadApkDownloadUrl,280));
+document.addEventListener('DOMContentLoaded',()=>setTimeout(loadPopupAdSettings,320));

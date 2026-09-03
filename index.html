@@ -6,16 +6,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 <script src="firebase.js"></script>
 <script src="reviews.js"></script>
-
-  <!-- L2K PWA -->
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#087cf7">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="L2K TOPUP">
-  <link rel="apple-touch-icon" href="./icon-192.png">
-
 </head>
 <body>
 <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><span class="logo-mark">L2K</span><span class="logo-text"><strong>L2K</strong><small>TOP UP STORE</small></span></a><nav id="navlinks" class="navlinks"><a href="index.html">Home</a><a href="topup.html">Game TopUp</a><a href="cards.html">Cards</a><a href="designs.html">Designs</a><a href="services.html">Services</a><a href="contact.html">Contact</a><a href="profile.html">Profile</a><a href="login.html">Login</a><a href="register.html">Register</a></nav><div class="nav-actions"><a class="btn btn-dark" href="admin.html" style="padding:9px 13px;font-size:9px">🔐 ADMIN PANEL</a><a class="icon-btn" href="topup.html">🛒</a><button id="menuBtn" class="icon-btn menu-btn">☰</button></div></div></header>
@@ -191,7 +181,7 @@ function renderHomeReviews(){
   track.innerHTML = display.map(r => `
     <article class="review-card">
       <div class="review-card-top">
-        <div class="review-avatar">${r.photoURL ? `<img src="${L2KReviews.escape(r.photoURL)}" alt="${L2KReviews.escape(r.name || 'Customer')}" referrerpolicy="no-referrer">` : L2KReviews.escape((r.name || 'C').charAt(0).toUpperCase())}</div>
+        <div class="review-avatar">${L2KReviews.escape((r.name || 'C').charAt(0).toUpperCase())}</div>
         <div>
           <h3>${L2KReviews.escape(r.name || 'Customer')}</h3>
           <small>${r.city ? '📍 '+L2KReviews.escape(r.city) : 'Verified customer'}</small>
@@ -270,22 +260,82 @@ if(typeof L2KReviews !== 'undefined'){
 
 <script src="animations.js"></script>
 
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('L2K PWA service worker registered'))
-      .catch(err => console.warn('Service worker registration failed:', err));
-  });
-}
-</script>
+<div id="entryAdOverlay" class="entry-ad-overlay" aria-hidden="true">
+  <div class="entry-ad-card" role="dialog" aria-modal="true" aria-label="Store promotion">
+    <button id="entryAdClose" class="entry-ad-close" type="button" aria-label="Close advertisement">×</button>
+    <a id="entryAdLink" class="entry-ad-link" href="#">
+      <img id="entryAdImage" class="entry-ad-image" alt="L2K TOP UP STORE promotion">
+    </a>
+    <div class="entry-ad-bottom">
+      <label class="entry-ad-check"><input id="entryAdDontShow" type="checkbox"> Don't show today</label>
+      <span class="entry-ad-tag">L2K PROMOTION</span>
+    </div>
+  </div>
+</div>
+
 
 <script>
-document.addEventListener('DOMContentLoaded',function(){
- if(typeof auth==='undefined')return;
- auth.onAuthStateChanged(function(user){
-  document.querySelectorAll('a[href="login.html"],a[href="./login.html"],a[href="register.html"],a[href="./register.html"]').forEach(function(a){a.style.display=user?'none':'';});
- });
-});
+(function(){
+  const overlay=document.getElementById('entryAdOverlay');
+  const image=document.getElementById('entryAdImage');
+  const link=document.getElementById('entryAdLink');
+  const closeBtn=document.getElementById('entryAdClose');
+  const dontShow=document.getElementById('entryAdDontShow');
+  if(!overlay||!image||!link||!closeBtn)return;
+
+  let currentConfig=null;
+  const todayKey=()=>{
+    const d=new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  const dismissedToday=()=>localStorage.getItem('l2k_popup_ad_hidden_date')===todayKey();
+
+  function closeEntryAd(){
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+    if(dontShow.checked && currentConfig?.allowDontShowToday!==false){
+      localStorage.setItem('l2k_popup_ad_hidden_date',todayKey());
+    }
+  }
+
+  function showEntryAd(config){
+    currentConfig=config;
+    if(!config?.enabled || !config.imageUrl)return;
+    if(config.allowDontShowToday!==false && dismissedToday())return;
+
+    image.src=config.imageUrl;
+    if(config.linkUrl){
+      link.href=config.linkUrl;
+      link.target='_blank';
+      link.rel='noopener noreferrer';
+      link.style.pointerEvents='auto';
+    }else{
+      link.href='#';
+      link.removeAttribute('target');
+      link.style.pointerEvents='none';
+    }
+    const bottom=overlay.querySelector('.entry-ad-bottom');
+    if(bottom) bottom.style.display=config.allowDontShowToday===false?'none':'flex';
+
+    const delay=Math.max(0,Math.min(15000,Number(config.delayMs||600)));
+    setTimeout(()=>{
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    },delay);
+  }
+
+  closeBtn.addEventListener('click',closeEntryAd);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeEntryAd()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('show'))closeEntryAd()});
+
+  function start(){
+    if(typeof db==='undefined'){setTimeout(start,250);return;}
+    db.ref('site/popupAd').once('value').then(s=>showEntryAd(s.val()||{})).catch(console.error);
+  }
+  start();
+})();
 </script>
+
 </body></html>
