@@ -16,7 +16,6 @@ window.L2KReviews = {
       message: (message || '').trim(),
       customerUid: user?.uid || null,
       customerEmail: user?.email || null,
-      photoURL: user?.photoURL || null,
       status: 'approved',
       createdAt: firebase.database.ServerValue.TIMESTAMP
     };

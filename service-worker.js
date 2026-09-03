@@ -1,15 +1,10 @@
-const CACHE_NAME = "l2k-topup-v1";
-const APP_SHELL = [
+const CACHE_NAME = "l2k-topup-pwa-v3";
+const CORE = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
-  "./firebase.js",
-  "./login.html",
-  "./register.html",
-  "./profile.html",
-  "./topup.html",
-  "./freefiresg.html",
+  "./animations.js",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"
@@ -17,7 +12,9 @@ const APP_SHELL = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).catch(() => {})
+    caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)).catch(err => {
+      console.warn("Initial cache failed:", err);
+    })
   );
   self.skipWaiting();
 });
@@ -37,10 +34,14 @@ self.addEventListener("fetch", event => {
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(() => {});
+        if (response && response.status === 200) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(()=>{});
+        }
         return response;
       })
-      .catch(() => caches.match(event.request).then(r => r || caches.match("./index.html")))
+      .catch(() =>
+        caches.match(event.request).then(cached => cached || caches.match("./index.html"))
+      )
   );
 });

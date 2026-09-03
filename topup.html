@@ -107,13 +107,16 @@ img{display:block;max-width:100%}
 }
 
 </style>
+
+<!-- L2K PWA -->
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#087cf7">
+<meta name="theme-color" content="#1688f8">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="L2K TOPUP">
 <link rel="apple-touch-icon" href="./icon-192.png">
+
 </head>
 <body>
 <header class="topbar">
@@ -170,7 +173,7 @@ img{display:block;max-width:100%}
   <section class="container app-box">
     <h2>Download Our App</h2>
     <p>Get exclusive deals and faster checkout.</p>
-    <a id="apkDownloadBtn" class="download-btn" href="#" role="button">⬇ Download APK</a>
+    <button class="download-btn" onclick="alert('Add your APK or Play Store link here')">▶ Download App</button>
   </section>
 </main>
 
@@ -178,7 +181,7 @@ img{display:block;max-width:100%}
   <div class="container">
     <div class="footer-grid">
       <div><h4>About Us</h4><p>We provide fast, automated and secure game top-ups and digital services for Sri Lankan gamers.</p></div>
-      <div><h4>Quick Links</h4><div class="footer-links"><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="profile.html">Profile</a><a href="terms.html">Terms & Conditions</a><a href="privacy.html">Privacy Policy</a><a href="login.html">Login</a></div></div>
+      <div><h4>Quick Links</h4><div class="footer-links"><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="payment.html">Payment</a><a href="profile.html">Profile</a><a href="terms.html">Terms & Conditions</a><a href="privacy.html">Privacy Policy</a><a href="login.html">Login</a></div></div>
       <div><h4>Contact Us</h4><div class="footer-links"><a href="contact.html">WhatsApp Support</a><a href="contact.html">Telegram Support</a><a href="mailto:info@l2ktopup.store">info@l2ktopup.store</a></div></div>
     </div>
     <div class="footer-bottom"><span>© 2026 L2K TOP UP STORE. All rights reserved.</span><span>Fast • Secure • Trusted</span></div>
@@ -242,55 +245,17 @@ loadGamesFromFirebase();
 <script src="animations.js"></script>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('L2K PWA service worker registered'))
-      .catch(err => console.warn('Service worker registration failed:', err));
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .then(function(reg) {
+        console.log("L2K service worker registered:", reg.scope);
+      })
+      .catch(function(err) {
+        console.error("L2K service worker registration failed:", err);
+      });
   });
 }
-</script>
-
-
-<script>
-(function(){
-  const btn=document.getElementById('apkDownloadBtn');
-  if(!btn)return;
-
-  function showMsg(msg){
-    if(typeof toast==='function') toast(msg);
-    else alert(msg);
-  }
-
-  if(typeof db==='undefined'){
-    btn.addEventListener('click',e=>{
-      e.preventDefault();
-      showMsg('APK download link is not configured yet.');
-    });
-    return;
-  }
-
-  db.ref('site/app/apkUrl').on('value',snap=>{
-    const url=(snap.val()||'').trim();
-
-    if(url){
-      btn.href=url;
-      btn.setAttribute('download','');
-      btn.removeAttribute('aria-disabled');
-      btn.textContent='⬇ Download APK';
-      btn.onclick=null;
-    }else{
-      btn.href='#';
-      btn.removeAttribute('download');
-      btn.setAttribute('aria-disabled','true');
-      btn.textContent='⬇ Download APK';
-      btn.onclick=function(e){
-        e.preventDefault();
-        showMsg('APK download is not available yet.');
-      };
-    }
-  });
-})();
 </script>
 
 </body>

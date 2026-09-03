@@ -3,21 +3,28 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 <script src="firebase.js"></script>
+
+<!-- L2K PWA -->
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#087cf7">
+<meta name="theme-color" content="#1688f8">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="L2K TOPUP">
 <link rel="apple-touch-icon" href="./icon-192.png">
+
 </head><body><header class="topbar"><div class="container nav"><a class="logo" href="index.html"><span class="logo-mark">L2K</span><span class="logo-text"><strong>L2K</strong><small>TOP UP STORE</small></span></a><nav class="navlinks"><a href="index.html">Home</a><a href="contact.html">Contact</a></nav></div></header><section class="section"><div class="container" style="max-width:800px"><div class="section-head"><div class="kicker">— PRIVACY —</div><h2>Privacy <span>Policy</span></h2></div><div class="card"><p style="font-size:11px;color:#718096">Only collect information required to process orders and customer support. Do not publish customer data. Update this starter policy to match the exact data, payment and analytics services used by your store.</p></div></div></section><script src="animations.js"></script>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('L2K PWA service worker registered'))
-      .catch(err => console.warn('Service worker registration failed:', err));
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .then(function(reg) {
+        console.log("L2K service worker registered:", reg.scope);
+      })
+      .catch(function(err) {
+        console.error("L2K service worker registration failed:", err);
+      });
   });
 }
 </script>

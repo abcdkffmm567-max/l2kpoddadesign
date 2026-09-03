@@ -5,6 +5,16 @@
 <script src="firebase.js"></script>
 <script src="orders.js"></script>
 <script src="reviews.js"></script>
+
+<!-- L2K PWA -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1688f8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="L2K TOPUP">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
 </head><body>
 <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><span class="logo-mark">L2K</span><span class="logo-text"><strong>L2K</strong><small>TOP UP STORE • ADMIN</small></span></a><a class="btn btn-light" href="index.html">VIEW STORE →</a></div></header>
 <main class="admin-shell"><div class="container"><div id="login" class="order-box" style="max-width:430px"><h2 style="font-family:Poppins;margin-bottom:14px">Admin Login</h2><div class="notice">Admin login required. Please enter your administrator credentials.</div><div class="field"><label>Username</label><input id="au" placeholder="Enter admin username"></div><br><div class="field"><label>Password</label><input id="ap" type="password" placeholder="Enter admin password"></div><br><button class="btn btn-primary" onclick="login()">LOGIN →</button></div>
@@ -164,4 +174,19 @@
   </div>
 </div>
 </section></div></div></div></main><div class="toast"></div><script src="app.js"></script><script src="admin.js"></script><script src="animations.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .then(function(reg) {
+        console.log("L2K service worker registered:", reg.scope);
+      })
+      .catch(function(err) {
+        console.error("L2K service worker registration failed:", err);
+      });
+  });
+}
+</script>
+
 </body></html>

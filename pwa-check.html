@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>L2K PWA Check</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1688f8">
+<style>
+body{font-family:Arial,sans-serif;background:#f5f7fb;padding:20px;color:#172033}
+.card{max-width:680px;margin:auto;background:white;padding:20px;border-radius:14px}
+.ok{color:#12864e}.bad{color:#c62828}code{word-break:break-all}
+</style>
+</head><body><div class="card">
+<h2>L2K PWA Check</h2>
+<div id="out">Checking...</div>
+</div>
+<script>
+(async()=>{
+ const lines=[];
+ lines.push(location.protocol==="https:" ? "✅ HTTPS" : "❌ HTTPS required");
+ try{
+   const m=await fetch("./manifest.json",{cache:"no-store"});
+   lines.push(m.ok ? "✅ manifest.json loaded" : "❌ manifest.json HTTP "+m.status);
+ }catch(e){lines.push("❌ manifest.json failed: "+e.message)}
+ if("serviceWorker" in navigator){
+   try{
+     const r=await navigator.serviceWorker.register("./service-worker.js",{scope:"./"});
+     lines.push("✅ Service Worker registered: "+r.scope);
+   }catch(e){lines.push("❌ Service Worker failed: "+e.message)}
+ }else lines.push("❌ Service Worker unsupported");
+ document.getElementById("out").innerHTML=lines.map(x=>`<p>${x}</p>`).join("");
+})();
+</script></body></html>

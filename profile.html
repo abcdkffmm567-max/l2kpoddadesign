@@ -334,6 +334,16 @@ body{touch-action:pan-y}
 }
 
 </style>
+
+<!-- L2K PWA -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1688f8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="L2K TOPUP">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
 </head>
 <body>
 <header class="topbar">
@@ -610,5 +620,20 @@ function startProfileAuthListener(){
 startProfileAuthListener();
 </script>
 <script src="animations.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .then(function(reg) {
+        console.log("L2K service worker registered:", reg.scope);
+      })
+      .catch(function(err) {
+        console.error("L2K service worker registration failed:", err);
+      });
+  });
+}
+</script>
+
 </body>
 </html>

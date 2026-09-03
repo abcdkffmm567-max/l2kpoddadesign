@@ -24,6 +24,16 @@ body{background:#f5f7fb;color:#101827;font-family:Inter,Arial,sans-serif}
 .pay-primary{background:linear-gradient(90deg,#2575ef,#0db6d7);color:#fff}.pay-light{background:#fff;border:1px solid #dfe5ee;color:#28364f}
 @media(max-width:620px){.pay-wrap{margin-top:12px}.pay-grid{grid-template-columns:1fr}.pay-title h1{font-size:24px}.pay-card{padding:15px}.pay-value{font-size:17px}.pay-actions{flex-direction:column}.pay-actions a{width:100%}}
 </style>
+
+<!-- L2K PWA -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1688f8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="L2K TOPUP">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
 </head>
 <body>
 <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><span class="logo-mark">L2K</span><span class="logo-text"><strong>L2K</strong><small>TOP UP STORE</small></span></a><div class="nav-actions"><a class="btn btn-light" href="topup.html">TOP UP</a><a class="btn btn-light" href="index.html">HOME</a></div></div></header>
@@ -74,5 +84,20 @@ body{background:#f5f7fb;color:#101827;font-family:Inter,Arial,sans-serif}
   </div>
 </main>
 <script src="animations.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .then(function(reg) {
+        console.log("L2K service worker registered:", reg.scope);
+      })
+      .catch(function(err) {
+        console.error("L2K service worker registration failed:", err);
+      });
+  });
+}
+</script>
+
 </body>
 </html>

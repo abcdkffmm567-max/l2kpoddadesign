@@ -32,13 +32,16 @@
 }
 
 </style>
+
+<!-- L2K PWA -->
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#087cf7">
+<meta name="theme-color" content="#1688f8">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="L2K TOPUP">
 <link rel="apple-touch-icon" href="./icon-192.png">
+
 </head>
 <body>
 <header class="topbar">
@@ -85,7 +88,7 @@ function renderAllReviews(reviews){
   grid.innerHTML = reviews.map(r => `
     <article class="review-card">
       <div class="review-card-top">
-        <div class="review-avatar">${r.photoURL ? `<img src="${L2KReviews.escape(r.photoURL)}" alt="${L2KReviews.escape(r.name || 'Customer')}" referrerpolicy="no-referrer">` : L2KReviews.escape((r.name || 'C').charAt(0).toUpperCase())}</div>
+        <div class="review-avatar">${L2KReviews.escape((r.name || 'C').charAt(0).toUpperCase())}</div>
         <div>
           <h3>${L2KReviews.escape(r.name || 'Customer')}</h3>
           <small>${r.city ? '📍 '+L2KReviews.escape(r.city) : 'Verified customer'}</small>
@@ -105,11 +108,15 @@ L2KReviews.listenApproved(renderAllReviews);
 <script src="animations.js"></script>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('L2K PWA service worker registered'))
-      .catch(err => console.warn('Service worker registration failed:', err));
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .then(function(reg) {
+        console.log("L2K service worker registered:", reg.scope);
+      })
+      .catch(function(err) {
+        console.error("L2K service worker registration failed:", err);
+      });
   });
 }
 </script>

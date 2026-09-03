@@ -1,16 +1,23 @@
 {
+  "id": "./",
   "name": "L2K TOP UP STORE",
   "short_name": "L2K TOPUP",
-  "description": "L2K TOP UP STORE - Fast, secure game top-ups and digital services.",
+  "description": "L2K TOP UP STORE - Game top-ups and digital services.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
-  "theme_color": "#087cf7",
+  "theme_color": "#1688f8",
   "lang": "en",
-  "categories": ["shopping", "games", "utilities"],
+  "categories": [
+    "shopping",
+    "games"
+  ],
   "icons": [
     {
       "src": "./icon-192.png",
