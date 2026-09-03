@@ -76,6 +76,13 @@ a{text-decoration:none;color:inherit}
 
 </style>
 <script src="orders.js"></script>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#087cf7">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="L2K TOPUP">
+<link rel="apple-touch-icon" href="./icon-192.png">
 </head>
 <body>
 <header class="topbar"><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">L2K</span>L2K TOP UP STORE</a><button class="menu" onclick="location.href='topup.html'">☰</button></div></header>
@@ -288,5 +295,16 @@ function loadFirebase(){
 loadFirebase();
 </script>
 <script src="animations.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(() => console.log('L2K PWA service worker registered'))
+      .catch(err => console.warn('Service worker registration failed:', err));
+  });
+}
+</script>
+
 </body>
 </html>

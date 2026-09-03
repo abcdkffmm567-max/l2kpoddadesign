@@ -3,5 +3,23 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 <script src="firebase.js"></script>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#087cf7">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="L2K TOPUP">
+<link rel="apple-touch-icon" href="./icon-192.png">
 </head><body><header class="topbar"><div class="container nav"><a class="logo" href="index.html"><span class="logo-mark">L2K</span><span class="logo-text"><strong>L2K</strong><small>TOP UP STORE</small></span></a><nav class="navlinks"><a href="index.html">Home</a><a href="contact.html">Contact</a></nav></div></header><section class="section"><div class="container" style="max-width:800px"><div class="section-head"><div class="kicker">— TERMS —</div><h2>Terms & <span>Conditions</span></h2></div><div class="card"><p style="font-size:11px;color:#718096">Prices, delivery times and availability may change. Customers are responsible for providing the correct game UID/account details. Orders are processed after payment confirmation. Replace this template with your final store policy before going live.</p></div></div></section><script src="animations.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(() => console.log('L2K PWA service worker registered'))
+      .catch(err => console.warn('Service worker registration failed:', err));
+  });
+}
+</script>
+
 </body></html>
