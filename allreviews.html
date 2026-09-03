@@ -85,7 +85,7 @@ function renderAllReviews(reviews){
   grid.innerHTML = reviews.map(r => `
     <article class="review-card">
       <div class="review-card-top">
-        <div class="review-avatar">${L2KReviews.escape((r.name || 'C').charAt(0).toUpperCase())}</div>
+        <div class="review-avatar">${r.photoURL ? `<img src="${L2KReviews.escape(r.photoURL)}" alt="${L2KReviews.escape(r.name || 'Customer')}" referrerpolicy="no-referrer">` : L2KReviews.escape((r.name || 'C').charAt(0).toUpperCase())}</div>
         <div>
           <h3>${L2KReviews.escape(r.name || 'Customer')}</h3>
           <small>${r.city ? '📍 '+L2KReviews.escape(r.city) : 'Verified customer'}</small>
