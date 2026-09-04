@@ -2,6 +2,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
 <script src="firebase.js"></script>
 <script src="orders.js"></script>
 <script src="reviews.js"></script>
@@ -23,7 +24,7 @@
 <div class="admin-card"><h2>Store Ads / Updates</h2><div id="posts"></div><button class="btn btn-primary" style="margin-top:14px" onclick="addPost()">+ ADD UPDATE</button></div>
 <div class="admin-card">
   <h2>Game Card Image URLs</h2>
-  <div class="notice">Paste direct image URLs here. These images are saved in Firebase Realtime Database and shown to all visitors on topup.html.</div>
+  <div class="notice">Paste direct image URLs here. These images are saved in online database and shown to all visitors on topup.html.</div>
   <div id="gameImageUrlFields" class="form-grid"></div>
   <div class="field full" style="margin-top:12px"><button class="btn btn-primary" type="button" onclick="saveGameImageUrls()">SAVE GAME CARD IMAGES</button></div>
 </div>
@@ -173,7 +174,36 @@
     </div>
   </div>
 </div>
-</section></div></div></div></main><div class="toast"></div><script src="app.js"></script><script src="admin.js"></script><script src="animations.js"></script>
+
+<div class="admin-card" id="adminPushNotificationsCard">
+  <h2>📲 Admin Phone Notifications</h2>
+  <div class="notice">
+    Enable this on the phone where you want to receive a notification whenever a customer places a new order.
+    For notifications while the website is closed, Push notification service must be configured for notifications while the website is closed.
+  </div>
+
+  <div class="form-grid" style="margin-top:12px">
+    <div class="field full">
+      <label>Web Push Public Key</label>
+      <input id="adminVapidKey" placeholder="Paste the public Web Push key">
+      <div style="font-size:9px;color:#68758a;margin-top:6px">
+        Use the Web Push public key configured for this website.
+      </div>
+    </div>
+
+    <div class="field full" style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" type="button" onclick="enableAdminPhoneNotifications()">🔔 ENABLE NOTIFICATIONS ON THIS PHONE</button>
+      <button class="btn" type="button" onclick="disableAdminPhoneNotifications()">TURN OFF ON THIS PHONE</button>
+      <button class="btn" type="button" onclick="testAdminPhoneNotification()">TEST NOTIFICATION</button>
+    </div>
+
+    <div class="field full">
+      <div id="adminNotificationStatus" class="notice">Notification status: Not enabled on this device.</div>
+    </div>
+  </div>
+</div>
+
+</section></div></div></div></main><div class="toast"></div><script src="app.js"></script><script src="admin.js"></script><script src="admin-notifications.js"></script><script src="animations.js"></script>
 
 <script>
 if ("serviceWorker" in navigator) {

@@ -557,7 +557,7 @@ async function preparePaymentProof(file){
 
           let dataUrl=canvas.toDataURL('image/jpeg',quality);
 
-          // Keep receipt small enough for reliable Firebase Realtime Database writes.
+          // Keep receipt small enough for reliable online database writes.
           if(dataUrl.length>900000){
             const scale2=Math.min(1,720/Math.max(w,h));
             canvas.width=Math.max(1,Math.round(w*scale2));
@@ -724,7 +724,7 @@ function loadFirebase(){
   renderPackages();
 
   if(typeof db==='undefined'){
-    console.warn('Firebase database not loaded; using default packages.');
+    console.warn('Online database unavailable; using default packages.');
     return;
   }
 

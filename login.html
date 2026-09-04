@@ -114,7 +114,7 @@ document.getElementById('loginForm').addEventListener('submit',async e=>{
 });
 async function googleLogin(){
   try{
-    if(!window.auth || !window.db) throw new Error('Firebase is not loaded. Check firebase.js and Firebase SDK files.');
+    if(!window.auth || !window.db) throw new Error('Authentication service is not available. Please try again.');
     const provider=new firebase.auth.GoogleAuthProvider();
     await window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const result=await window.auth.signInWithPopup(provider);

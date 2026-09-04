@@ -423,7 +423,7 @@ function toast(msg){
 }
 async function demoGoogle(){
   try{
-    if(!window.auth || !window.db) throw new Error('Firebase is not loaded. Check firebase.js and Firebase SDK files.');
+    if(!window.auth || !window.db) throw new Error('Authentication service is not available. Please try again.');
     const provider = new firebase.auth.GoogleAuthProvider();
     const result = await window.auth.signInWithPopup(provider);
     const user = result.user;
@@ -453,7 +453,7 @@ async function sendVerificationLink(){
   if(!email){toast('Enter your email address first');return}
 
   try{
-    if(!window.auth) throw new Error('Firebase Authentication is not loaded.');
+    if(!window.auth) throw new Error('Authentication service is not available.');
 
     const btn=document.getElementById('sendVerifyBtn');
     btn.disabled=true;

@@ -6,7 +6,7 @@ function generateL2KOrderId(){
 }
 
 async function createStoreOrder(orderData){
-  if(typeof db === 'undefined') throw new Error('Firebase database is not available.');
+  if(typeof db === 'undefined') throw new Error('Database service is not available.');
 
   let uid = null, email = null, displayName = null;
   try{
@@ -37,7 +37,7 @@ async function createStoreOrder(orderData){
 }
 
 async function setOrderStatus(firebaseKey, status){
-  if(typeof db === 'undefined') throw new Error('Firebase database is not available.');
+  if(typeof db === 'undefined') throw new Error('Database service is not available.');
   if(!firebaseKey) throw new Error('Order key is missing.');
   await db.ref('orders/' + firebaseKey).update({
     status,

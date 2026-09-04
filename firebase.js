@@ -31,6 +31,14 @@ const firebaseConfig = {
       window.storage = null;
     }
 
+    // Firebase Cloud Messaging is only available on supported HTTPS browsers.
+    try {
+      window.messaging = firebase.messaging ? firebase.messaging() : null;
+    } catch (e) {
+      console.warn("Firebase Messaging is not available on this page/browser.", e);
+      window.messaging = null;
+    }
+
     window.firebaseReady = true;
     console.log("L2K Firebase initialized successfully");
   } catch (err) {

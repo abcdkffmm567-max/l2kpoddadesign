@@ -1,7 +1,7 @@
-// L2K TOP UP STORE - Firebase reviews system
+// L2K TOP UP STORE - customer reviews system
 window.L2KReviews = {
   ref(){
-    if(typeof db === 'undefined') throw new Error('Firebase database is not available.');
+    if(typeof db === 'undefined') throw new Error('Database service is not available.');
     return db.ref('reviews');
   },
 

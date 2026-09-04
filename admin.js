@@ -87,7 +87,7 @@ function renderGameImageUrlFields(){
 }
 
 async function saveGameImageUrls(){
-  if(typeof db==='undefined'){toast('Firebase not loaded');return}
+  if(typeof db==='undefined'){toast('Server connection unavailable');return}
   try{
     const updates={};
     adminGameCards.forEach(([id,name])=>{
@@ -110,7 +110,7 @@ function loadWebsiteImageUrls(){
 }
 
 async function saveWebsiteImageUrls(){
-  if(typeof db==='undefined'){toast('Firebase not loaded');return}
+  if(typeof db==='undefined'){toast('Server connection unavailable');return}
   try{
     const hero=(document.getElementById('heroUrl')?.value||'').trim();
     const promo=(document.getElementById('promoUrl')?.value||'').trim();
@@ -177,7 +177,7 @@ function loadFreeFireAdmin(){
 }
 
 async function saveFreeFireSG(){
- if(typeof db==='undefined'){toast('Firebase not loaded');return}
+ if(typeof db==='undefined'){toast('Server connection unavailable');return}
  try{
    const packagesObj={};
    ffAdminPackages.forEach(p=>packagesObj[p.id]=p);
@@ -186,7 +186,7 @@ async function saveFreeFireSG(){
      packages:packagesObj,
      updatedAt:firebase.database.ServerValue.TIMESTAMP
    });
-   toast('Free Fire SG page saved to Firebase');
+   toast('Free Fire SG page saved successfully');
  }catch(err){console.error(err);toast(err.message||'Could not save Free Fire page')}
 }
 
@@ -367,7 +367,7 @@ function loadHeroSliderBanners(){
 }
 
 async function saveHeroSliderBanners(){
-  if(typeof db==='undefined'){toast('Firebase not loaded');return}
+  if(typeof db==='undefined'){toast('Server connection unavailable');return}
   try{
     const data={};
     for(let i=1;i<=4;i++){
@@ -409,7 +409,7 @@ function loadBonusOfferSettings(){
 }
 
 async function saveBonusOfferSettings(){
-  if(typeof db==='undefined'){toast('Firebase not loaded','error');return}
+  if(typeof db==='undefined'){toast('Server connection unavailable','error');return}
 
   const enabled=document.getElementById('bonusOfferEnabled')?.value==='true';
   const hideWhenExpired=document.getElementById('bonusHideExpired')?.value==='true';
@@ -469,7 +469,7 @@ function loadPopupAdSettings(){
 }
 
 async function savePopupAdSettings(){
-  if(typeof db==='undefined'){toast('Firebase not loaded','error');return}
+  if(typeof db==='undefined'){toast('Server connection unavailable','error');return}
   const enabled=document.getElementById('popupAdEnabled')?.value==='true';
   const allowDontShowToday=document.getElementById('popupAdDontShow')?.value==='true';
   const imageUrl=(document.getElementById('popupAdImageUrl')?.value||'').trim();

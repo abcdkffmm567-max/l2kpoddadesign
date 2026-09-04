@@ -408,7 +408,7 @@ body{touch-action:pan-y}
             <input id="whatsapp" placeholder="+94...">
           </div>
           <div class="field">
-            <label>Firebase UID</label>
+            <label>Account ID</label>
             <input id="uid" readonly>
           </div>
           <div class="field full">
@@ -550,7 +550,7 @@ async function uploadProfilePhoto(){
   if(file.size>5*1024*1024){toast('Photo must be under 5MB');return}
 
   try{
-    if(!window.storage) throw new Error('Firebase Storage is not loaded or enabled.');
+    if(!window.storage) throw new Error('Image upload service is not available.');
     status.textContent='Uploading photo...';
     const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'');
     const ref=window.storage.ref(`profile-photos/${currentUser.uid}/profile.${ext}`);
