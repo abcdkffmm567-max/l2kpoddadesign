@@ -45,7 +45,7 @@ self.addEventListener("notificationclick", event => {
   );
 });
 
-const CACHE_NAME = "l2k-topup-admin-push-v6";
+const CACHE_NAME = "l2k-topup-fcm-fixed-v7";
 const CORE = [
   "./",
   "./index.html",

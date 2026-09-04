@@ -13,6 +13,21 @@
 
   function byId(id){ return document.getElementById(id); }
 
+
+  function ensureMessaging(){
+    if(window.messaging) return window.messaging;
+    try{
+      if(window.firebase && firebase.messaging && window.isSecureContext){
+        window.messaging = firebase.messaging();
+        return window.messaging;
+      }
+    }catch(e){
+      console.warn('Push notification initialization failed', e);
+    }
+    return null;
+  }
+
+
   function status(message, ok){
     const el = byId('adminNotificationStatus');
     if(!el) return;
@@ -90,10 +105,11 @@
   }
 
   function startForegroundMessaging(){
-    if(foregroundListenerStarted || !window.messaging || typeof window.messaging.onMessage !== 'function') return;
+    const msg = ensureMessaging();
+    if(foregroundListenerStarted || !msg || typeof msg.onMessage !== 'function') return;
     foregroundListenerStarted = true;
 
-    window.messaging.onMessage(payload=>{
+    msg.onMessage(payload=>{
       const data = payload.data || {};
       const note = payload.notification || {};
       const title = data.title || note.title || '🛒 New L2K Order';
@@ -113,8 +129,8 @@
       if(!('Notification' in window)){
         throw new Error('This browser does not support web notifications.');
       }
-      if(!window.messaging){
-        throw new Error('Push notification service is not available.');
+      if(!ensureMessaging()){
+        throw new Error('Push notification service could not start. Refresh the page once and try again.');
       }
 
       const vapid = (byId('adminVapidKey')?.value || '').trim();
@@ -129,7 +145,9 @@
       }
 
       const swReg = await getServiceWorkerRegistration();
-      const token = await window.messaging.getToken({
+      const messaging = ensureMessaging();
+      if(!messaging) throw new Error('Push notification service could not start.');
+      const token = await messaging.getToken({
         vapidKey: vapid,
         serviceWorkerRegistration: swReg
       });

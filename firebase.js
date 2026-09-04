@@ -31,15 +31,19 @@ const firebaseConfig = {
       window.storage = null;
     }
 
-    // Firebase Cloud Messaging is only available on supported HTTPS browsers.
+    // Firebase Cloud Messaging for admin phone push notifications.
+    window.messaging = null;
     try {
-      window.messaging = firebase.messaging ? firebase.messaging() : null;
+      if (firebase.messaging && window.isSecureContext) {
+        window.messaging = firebase.messaging();
+        console.log("L2K push notification service ready.");
+      }
     } catch (e) {
-      console.warn("Firebase Messaging is not available on this page/browser.", e);
+      console.warn("Push notification service initialization failed.", e);
       window.messaging = null;
     }
 
-    window.firebaseReady = true;
+window.firebaseReady = true;
     console.log("L2K Firebase initialized successfully");
   } catch (err) {
     window.firebaseReady = false;
