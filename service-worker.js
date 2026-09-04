@@ -6,7 +6,9 @@ firebase.initializeApp({
   authDomain: "l2k-top-up-store.firebaseapp.com",
   databaseURL: "https://l2k-top-up-store-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "l2k-top-up-store",
-  storageBucket: "l2k-top-up-store.firebasestorage.app"
+  storageBucket: "l2k-top-up-store.firebasestorage.app",
+  messagingSenderId: "968217753616",
+  appId: "1:968217753616:web:50cf1aefb82c6af2247295"
 });
 
 const messaging = firebase.messaging();
