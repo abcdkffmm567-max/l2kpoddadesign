@@ -280,6 +280,7 @@ function renderOrders(){
           <button class="small-btn" onclick="changeOrderStatus('${o.id}','active')">Activate</button>
           <button class="small-btn" onclick="changeOrderStatus('${o.id}','completed')">Complete</button>
           <button class="small-btn" onclick="changeOrderStatus('${o.id}','rejected')">Reject</button>
+          <button class="small-btn" style="background:#fff1f1;color:#c62828;border:1px solid #ffc9c9" onclick="deleteOrder('${o.id}','${(o.orderId||('L2KTP-'+o.id.slice(-6).toUpperCase())).replace(/'/g, "\\'")}')">Delete</button>
         </td>
       </tr>`).join('')}
   </table>`;
@@ -292,6 +293,25 @@ async function changeOrderStatus(orderId,status){
   }catch(err){
     console.error(err);
     toast(err.message||'Could not update order');
+  }
+}
+
+async function deleteOrder(orderId,displayId){
+  if(typeof db==='undefined'){
+    toast('Server connection unavailable');
+    return;
+  }
+
+  const label=displayId||orderId;
+  const ok=window.confirm(`Delete order ${label}?\n\nThis will permanently remove the order from the admin panel and the customer's order history.`);
+  if(!ok)return;
+
+  try{
+    await db.ref('orders/'+orderId).remove();
+    toast('Order deleted');
+  }catch(err){
+    console.error(err);
+    toast(err.message||'Could not delete order');
   }
 }
 
